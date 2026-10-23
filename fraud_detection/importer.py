@@ -67,6 +67,8 @@ def _parse_amount(raw: str) -> Decimal:
         raise ValueError(f"amount is not a number: {raw!r}") from None
     if not amount.is_finite():
         raise ValueError(f"amount is not a number: {raw!r}")
+    if amount <= 0:
+        raise ValueError(f"amount must be greater than zero: {raw!r}")
     return amount
 
 

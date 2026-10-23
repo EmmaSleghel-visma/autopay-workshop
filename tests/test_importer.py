@@ -60,5 +60,12 @@ def test_bad_rows_are_reported_with_line_numbers_and_good_rows_kept():
     assert [e.line for e in result.errors] == [3, 4, 5, 6]
 
 
+def test_zero_and_negative_amounts_are_rejected():
+    result = parse(HEADER + "t1,1,2,0.00,NOK,2026-11-30,\nt2,1,2,-5.00,NOK,2026-11-30,\nt3,1,2,0.01,NOK,2026-11-30,\n")
+    assert [t.transaction_id for t in result.transactions] == ["t3"]
+    assert [e.line for e in result.errors] == [2, 3]
+    assert all("greater than zero" in e.message for e in result.errors)
+
+
 def test_normalize_account_strips_spaces_and_dots():
     assert normalize_account(" 1234.56 78903 ") == "12345678903"
