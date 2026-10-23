@@ -12,7 +12,7 @@ It runs on your own Windows PC and you use it in your web browser.
 ## 2. Start the app
 
 Double-click **`start.bat`** in the app folder. If Windows shows **"Windows protected your PC"**, click **More info**, then **Run anyway**.
-The first time, it sets the app up (about a minute, needs internet once).
+The first time, it sets the app up (1-2 minutes, needs internet once).
 Your browser then opens **http://127.0.0.1:5000**. If the page does not load at once, refresh it.
 Keep the black window open while you use the app; close it to stop the app.
 The window shows a "development server" warning - that is expected for this pilot and safe to ignore.
