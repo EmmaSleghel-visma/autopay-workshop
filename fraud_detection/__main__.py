@@ -1,6 +1,7 @@
 """Command-line tool for trying the import pipeline locally.
 
     python -m fraud_detection import samples/transactions.csv
+    python -m fraud_detection import samples/pain001_v03.xml
     python -m fraud_detection list
 """
 
@@ -10,8 +11,7 @@ import sys
 from datetime import date
 
 from . import rules
-from .importer import CsvImporter
-from .service import import_transactions
+from .service import import_transactions, importer_for
 from .storage import TransactionStore
 from .web import DEFAULT_DB
 
@@ -27,8 +27,8 @@ def cmd_import(store: TransactionStore, path: str) -> int:
             rules_missing = True
             return []
 
-    with open(path, newline="", encoding="utf-8") as f:
-        summary = import_transactions(f, CsvImporter(), store, evaluate_or_skip, date.today())
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        summary = import_transactions(f, importer_for(path), store, evaluate_or_skip, date.today())
     if rules_missing:
         print("NOTE: rules engine not implemented yet - transactions were imported without flags.\n")
     print(f"Imported: {summary.imported}   Flagged: {summary.flagged}   "
@@ -36,7 +36,7 @@ def cmd_import(store: TransactionStore, path: str) -> int:
     for tid in summary.duplicates:
         print(f"  duplicate   {tid}")
     for err in summary.errors:
-        print(f"  line {err.line:<5} {err.message}")
+        print(f"  line {err.line:<5} {err.message}" if err.line else f"  error      {err.message}")
     return 1 if summary.errors else 0
 
 
@@ -58,7 +58,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m fraud_detection")
     parser.add_argument("--db", default=os.environ.get("FRAUD_DB", DEFAULT_DB), help="SQLite file (default: %(default)s)")
     sub = parser.add_subparsers(dest="command", required=True)
-    p_import = sub.add_parser("import", help="import a CSV file")
+    p_import = sub.add_parser("import", help="import a CSV or pain.001 XML file")
     p_import.add_argument("csv")
     sub.add_parser("list", help="list stored transactions")
     args = parser.parse_args(argv)

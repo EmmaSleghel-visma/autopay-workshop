@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SYNTHETIC sample: fake names, accounts and amounts. Typical legacy pain.001.001.03 structure. -->
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pain.001.001.03">
+  <CstmrCdtTrfInitn>
+    <GrpHdr>
+      <MsgId>WI-20261023-0001</MsgId>
+      <CreDtTm>2026-10-23T10:00:00</CreDtTm>
+      <NbOfTxs>4</NbOfTxs>
+      <CtrlSum>27150.00</CtrlSum>
+      <InitgPty><Nm>West Island AB</Nm></InitgPty>
+    </GrpHdr>
+    <PmtInf>
+      <PmtInfId>WI-PMT-001</PmtInfId>
+      <PmtMtd>TRF</PmtMtd>
+      <NbOfTxs>3</NbOfTxs>
+      <ReqdExctnDt>2026-11-15</ReqdExctnDt>
+      <Dbtr><Nm>Test Debtor AS</Nm></Dbtr>
+      <DbtrAcct><Id><Othr><Id>12345678903</Id><SchmeNm><Cd>BBAN</Cd></SchmeNm></Othr></Id></DbtrAcct>
+      <DbtrAgt><FinInstnId><BIC>TESTNOKKXXX</BIC></FinInstnId></DbtrAgt>
+      <CdtTrfTxInf>
+        <PmtId><InstrId>INS-0001</InstrId><EndToEndId>E2E-0001</EndToEndId></PmtId>
+        <Amt><InstdAmt Ccy="NOK">2500.00</InstdAmt></Amt>
+        <Cdtr><Nm>Known Supplier AS</Nm></Cdtr>
+        <CdtrAcct><Id><Othr><Id>98765432109</Id><SchmeNm><Cd>BBAN</Cd></SchmeNm></Othr></Id></CdtrAcct>
+        <RmtInf><Ustrd>Invoice 1001</Ustrd></RmtInf>
+      </CdtTrfTxInf>
+      <CdtTrfTxInf>
+        <PmtId><InstrId>INS-0002</InstrId><EndToEndId>E2E-0002</EndToEndId></PmtId>
+        <Amt><InstdAmt Ccy="NOK">15000.00</InstdAmt></Amt>
+        <Cdtr><Nm>Brand New Vendor AS</Nm></Cdtr>
+        <CdtrAcct><Id><Othr><Id>11112222333</Id><SchmeNm><Cd>BBAN</Cd></SchmeNm></Othr></Id></CdtrAcct>
+        <RmtInf><Ustrd>Invoice 1002</Ustrd></RmtInf>
+      </CdtTrfTxInf>
+      <CdtTrfTxInf>
+        <PmtId><InstrId>INS-0003</InstrId><EndToEndId>E2E-0003</EndToEndId></PmtId>
+        <Amt><InstdAmt Ccy="EUR">650.00</InstdAmt></Amt>
+        <Cdtr><Nm>Euro Supplier GmbH</Nm></Cdtr>
+        <CdtrAcct><Id><IBAN>DE00000000000000000000</IBAN></Id></CdtrAcct>
+        <RmtInf><Ustrd>Invoice 1003</Ustrd></RmtInf>
+      </CdtTrfTxInf>
+    </PmtInf>
+    <PmtInf>
+      <PmtInfId>WI-PMT-002</PmtInfId>
+      <PmtMtd>TRF</PmtMtd>
+      <NbOfTxs>1</NbOfTxs>
+      <ReqdExctnDt>2027-03-01</ReqdExctnDt>
+      <Dbtr><Nm>Test Debtor AS</Nm></Dbtr>
+      <DbtrAcct><Id><Othr><Id>12345678903</Id><SchmeNm><Cd>BBAN</Cd></SchmeNm></Othr></Id></DbtrAcct>
+      <DbtrAgt><FinInstnId><BIC>TESTNOKKXXX</BIC></FinInstnId></DbtrAgt>
+      <CdtTrfTxInf>
+        <PmtId><InstrId>INS-0004</InstrId><EndToEndId>E2E-0004</EndToEndId></PmtId>
+        <Amt><InstdAmt Ccy="NOK">9000.00</InstdAmt></Amt>
+        <Cdtr><Nm>Known Supplier AS</Nm></Cdtr>
+        <CdtrAcct><Id><Othr><Id>98765432109</Id><SchmeNm><Cd>BBAN</Cd></SchmeNm></Othr></Id></CdtrAcct>
+        <RmtInf><Ustrd>Invoice 1004</Ustrd></RmtInf>
+      </CdtTrfTxInf>
+    </PmtInf>
+  </CstmrCdtTrfInitn>
+</Document>

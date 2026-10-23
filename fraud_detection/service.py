@@ -4,11 +4,17 @@ from dataclasses import dataclass, field
 from datetime import date
 from typing import Callable, TextIO
 
-from .importer import Importer
+from .importer import CsvImporter, Importer
 from .models import History, RowError, Transaction
+from .pain001 import Pain001Importer
 from .storage import TransactionStore
 
 Evaluate = Callable[[Transaction, History, date], list[str]]
+
+
+def importer_for(filename: str) -> Importer:
+    """Pick the importer from the file extension: .xml -> pain.001, anything else -> CSV."""
+    return Pain001Importer() if filename.lower().endswith(".xml") else CsvImporter()
 
 
 @dataclass
