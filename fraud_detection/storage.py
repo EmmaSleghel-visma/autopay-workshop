@@ -2,6 +2,7 @@
 
 import json
 import sqlite3
+from contextlib import contextmanager
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
@@ -29,9 +30,20 @@ class TransactionStore:
     def __init__(self, path: str | Path):
         self._conn = sqlite3.connect(str(path), check_same_thread=False)
         self._conn.executescript(SCHEMA)
+        self._in_batch = False
 
     def close(self) -> None:
         self._conn.close()
+
+    @contextmanager
+    def batch(self):
+        """One commit for everything added inside, instead of one per row (rolled back on error)."""
+        self._in_batch = True
+        try:
+            with self._conn:
+                yield
+        finally:
+            self._in_batch = False
 
     def exists(self, transaction_id: str) -> bool:
         row = self._conn.execute(
@@ -40,23 +52,24 @@ class TransactionStore:
         return row is not None
 
     def add(self, tx: Transaction, import_date: date, flags: list[str]) -> None:
-        with self._conn:
-            self._conn.execute(
-                "INSERT INTO transactions (transaction_id, debtor_account, creditor_account,"
-                " amount, currency, due_date, created_date, import_date, flags)"
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (
-                    tx.transaction_id,
-                    tx.debtor_account,
-                    tx.creditor_account,
-                    str(tx.amount),
-                    tx.currency,
-                    tx.due_date.isoformat(),
-                    tx.created_date.isoformat() if tx.created_date else None,
-                    import_date.isoformat(),
-                    json.dumps(flags),
-                ),
-            )
+        self._conn.execute(
+            "INSERT INTO transactions (transaction_id, debtor_account, creditor_account,"
+            " amount, currency, due_date, created_date, import_date, flags)"
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            (
+                tx.transaction_id,
+                tx.debtor_account,
+                tx.creditor_account,
+                str(tx.amount),
+                tx.currency,
+                tx.due_date.isoformat(),
+                tx.created_date.isoformat() if tx.created_date else None,
+                import_date.isoformat(),
+                json.dumps(flags),
+            ),
+        )
+        if not self._in_batch:
+            self._conn.commit()
 
     def all(self) -> list[StoredTransaction]:
         rows = self._conn.execute(

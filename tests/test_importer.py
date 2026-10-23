@@ -69,3 +69,10 @@ def test_zero_and_negative_amounts_are_rejected():
 
 def test_normalize_account_strips_spaces_and_dots():
     assert normalize_account(" 1234.56 78903 ") == "12345678903"
+
+
+def test_row_with_more_fields_than_header_is_rejected():
+    result = parse(HEADER + "t1,1,2,5.00,NOK,2026-11-30,2026-10-20,EXTRA\n")
+    assert result.transactions == []
+    assert result.errors[0].line == 2
+    assert "more fields" in result.errors[0].message

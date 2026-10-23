@@ -59,3 +59,28 @@ def test_parse_errors_are_reported(tmp_path):
     summary = run(store, HEADER + "t1,D1,C1,abc,NOK,2026-11-30\n", lambda *a: [])
     assert summary.imported == 0
     assert [e.line for e in summary.errors] == [2]
+
+
+def test_non_utf8_file_is_rejected_without_crash(tmp_path):
+    store = TransactionStore(tmp_path / "fraud.db")
+    raw = (HEADER + "t1,Bjørn,C1,5.00,NOK,2026-11-30\n").encode("cp1252")
+    source = io.TextIOWrapper(io.BytesIO(raw), encoding="utf-8")
+    summary = import_transactions(source, CsvImporter(), store, lambda *a: [], TODAY)
+    assert summary.imported == 0
+    assert "not UTF-8" in summary.errors[0].message
+    assert store.all() == []
+
+
+def test_import_is_all_or_nothing_when_evaluation_fails(tmp_path):
+    store = TransactionStore(tmp_path / "fraud.db")
+
+    def evaluate(tx, history, day):
+        if tx.transaction_id == "t2":
+            raise RuntimeError("boom")
+        return []
+
+    try:
+        run(store, HEADER + "t1,D1,C1,5.00,NOK,2026-11-30\nt2,D1,C1,5.00,NOK,2026-11-30\n", evaluate)
+    except RuntimeError:
+        pass
+    assert store.all() == []  # t1 rolled back with the failed batch
