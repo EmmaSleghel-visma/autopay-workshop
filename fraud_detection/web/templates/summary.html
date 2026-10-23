@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Import summary{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Import summary</h1>
+  <p>File: {{ filename }}</p>
+  <ul class="counts">
+    <li>Imported: {{ summary.imported }}</li>
+    <li>Flagged: {{ summary.flagged }}</li>
+    <li>Duplicates: {{ summary.duplicates | length }}</li>
+    <li>Errors: {{ summary.errors | length }}</li>
+  </ul>
+</div>
+{% if summary.duplicates %}
+<div class="card">
+  <h2>Duplicates (skipped)</h2>
+  <ul>
+    {% for transaction_id in summary.duplicates %}<li>{{ transaction_id }}</li>{% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% if summary.errors %}
+<div class="card">
+  <h2>Errors</h2>
+  <ul class="error">
+    {% for e in summary.errors %}
+    <li>{% if e.line %}Line {{ e.line }}: {% endif %}{{ e.message }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+<p><a href="{{ url_for('transactions') }}">View all transactions</a> · <a href="{{ url_for('upload_form') }}">Upload another file</a></p>
+{% endblock %}
