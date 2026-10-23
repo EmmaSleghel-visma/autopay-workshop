@@ -19,11 +19,16 @@ if not defined PY (
 
 rem setup-ok.txt is written only after a complete setup, so an interrupted or failed
 rem first start (no internet, window closed) is redone instead of leaving a broken app.
-if not exist ".venv\setup-ok.txt" (
-    echo Setting up the app. This takes a minute and needs internet...
+rem Setup is also redone when the app's Python is missing (e.g. removed by antivirus).
+set "NEED_SETUP="
+if not exist ".venv\setup-ok.txt" set "NEED_SETUP=1"
+if not exist ".venv\Scripts\python.exe" set "NEED_SETUP=1"
+if defined NEED_SETUP (
+    echo Setting up the app. This takes 1-2 minutes and needs internet...
     if exist ".venv" rmdir /s /q ".venv"
+    if exist ".venv" goto :running
     %PY% -m venv .venv || goto :error
-    ".venv\Scripts\python.exe" -m pip install --disable-pip-version-check -q -r requirements.txt || goto :error
+    ".venv\Scripts\python.exe" -m pip install --disable-pip-version-check -q --retries 1 --timeout 15 -r requirements.txt || goto :error
     echo ok> ".venv\setup-ok.txt"
 )
 
@@ -33,8 +38,23 @@ echo Keep this window open while you use the app. Close it to stop the app.
 echo.
 start "" cmd /c "timeout /t 3 >nul & start http://127.0.0.1:5000"
 ".venv\Scripts\python.exe" -m flask --app "fraud_detection.web:create_app()" run
+rem Flask exits 0 when stopped with Ctrl+C and 1 when it cannot start (e.g. port 5000 in use).
+if errorlevel 1 goto :notstarted
 pause
 exit /b 0
+
+:notstarted
+echo.
+echo The app could not start. Another program may be using port 5000 - close it and start again.
+echo If this keeps happening, send a screenshot of this window to your Autopay contact.
+pause
+exit /b 1
+
+:running
+echo.
+echo The app seems to be already running. Close its other black window first, then start this file again.
+pause
+exit /b 1
 
 :error
 echo.
