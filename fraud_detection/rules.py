@@ -16,7 +16,9 @@ and returns the codes of every rule that triggered (empty list = not flagged).
 Amounts are always > 0: the importer rejects zero and negative amounts.
 """
 
+import calendar
 from datetime import date
+from decimal import Decimal
 
 from .models import History, Transaction
 
@@ -26,6 +28,30 @@ FAR_FUTURE_DUE = "FAR_FUTURE_DUE"
 PAST_DUE_DATE = "PAST_DUE_DATE"
 UNSUPPORTED_CURRENCY = "UNSUPPORTED_CURRENCY"
 
+HIGH_AMOUNT_LIMIT = Decimal("10000.00")
+FAR_FUTURE_MONTHS = 3
+SUPPORTED_CURRENCY = "NOK"
+
 
 def evaluate(tx: Transaction, history: History, import_date: date) -> list[str]:
-    raise NotImplementedError("rules engine not implemented yet")
+    flags = []
+    if tx.amount > HIGH_AMOUNT_LIMIT:
+        flags.append(HIGH_AMOUNT)
+    if history.debtor_known(tx.debtor_account) and not history.has_paid(
+        tx.debtor_account, tx.creditor_account
+    ):
+        flags.append(NEW_CREDITOR)
+    start = tx.created_date if tx.created_date is not None else import_date
+    if tx.due_date > _add_months(start, FAR_FUTURE_MONTHS):
+        flags.append(FAR_FUTURE_DUE)
+    if tx.currency != SUPPORTED_CURRENCY:
+        flags.append(UNSUPPORTED_CURRENCY)
+    return flags
+
+
+def _add_months(day: date, months: int) -> date:
+    """Same day of the month, `months` later; clamped to the last day of a shorter month."""
+    month_index = day.month - 1 + months
+    year = day.year + month_index // 12
+    month = month_index % 12 + 1
+    return date(year, month, min(day.day, calendar.monthrange(year, month)[1]))
