@@ -6,19 +6,18 @@ actual.json shape (produce it from the build however is easiest):
   {"transactions": [{"transaction_id": "T-R1-02", "flags": ["..."]}, ...],
    "summaries": {"all_rules.csv": {"imported": 31, "flagged": 12, "duplicates": 1, "errors": 0}}}
 Both keys are optional, so step 1 (rules engine only) can send just transactions.
-Flag names from the build are mapped through FLAG_ALIASES; extend it once Developer
-tells us their names.
+Flag codes are the app's own (HIGH_AMOUNT, NEW_CREDITOR, ...); FLAG_ALIASES maps other spellings.
 """
 import json
 import sys
 from pathlib import Path
 
 FLAG_ALIASES = {
-    "R1_AMOUNT_OVER_10000": ["r1", "high_amount"],
-    "R2_NEW_CREDITOR": ["r2", "new_creditor"],
-    "R3_DUE_DATE_OVER_3_MONTHS": ["r3", "far_future_due"],
-    "UNSUPPORTED_CURRENCY": ["currency", "unsupported_currency", "unsupported currency"],
-    "PAST_DUE_DATE": ["past_due_date", "due date in the past"],
+    "HIGH_AMOUNT": ["r1"],
+    "NEW_CREDITOR": ["r2"],
+    "FAR_FUTURE_DUE": ["r3"],
+    "UNSUPPORTED_CURRENCY": ["unsupported currency"],
+    "PAST_DUE_DATE": ["due date in the past"],
 }
 
 

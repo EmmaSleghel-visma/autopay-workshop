@@ -24,9 +24,9 @@ from pathlib import Path
 HERE = Path(__file__).parent
 HEADER = ["transaction_id", "debtor_account", "creditor_account", "amount", "currency", "due_date", "created_date"]
 
-R1 = "R1_AMOUNT_OVER_10000"
-R2 = "R2_NEW_CREDITOR"
-R3 = "R3_DUE_DATE_OVER_3_MONTHS"
+R1 = "HIGH_AMOUNT"
+R2 = "NEW_CREDITOR"
+R3 = "FAR_FUTURE_DUE"
 CUR = "UNSUPPORTED_CURRENCY"
 PAST = "PAST_DUE_DATE"
 POS, NEG, CORNER = "POS", "NEG", "CORNER"
@@ -150,21 +150,21 @@ ERRORS = [
 
 GOOD_ROW = row("T-FILE-01", D_BASE, C_A, "100.00", "2026-10-15")
 
-# (file name, raw bytes, case id, category, expected behaviour)
+# (file name, raw bytes, case id, category, expected behaviour, imported, errors)
 FILES = [
-    ("file_empty.csv", ",".join(HEADER).encode() + b"\r\n", "FILE-01", CORNER, "header only: summary 0/0/0/0, no crash"),
-    ("file_zero_bytes.csv", b"", "FILE-02", NEG, "0-byte file: clear error, no crash"),
-    ("file_bad_header.csv", b"id,from,to,sum,ccy,due,created\r\n" + ",".join(GOOD_ROW).encode() + b"\r\n", "FILE-03", NEG, "unknown header: whole file rejected with a clear message"),
-    ("file_no_header.csv", ",".join(GOOD_ROW).encode() + b"\r\n", "FILE-04", NEG, "missing header row: rejected (or first row not silently lost)"),
-    ("file_semicolon.csv", ";".join(HEADER).encode() + b"\r\n" + ";".join(GOOD_ROW).encode() + b"\r\n", "FILE-05", NEG, "semicolon delimiter (Excel NO locale): clear error or supported (confirm)"),
-    ("file_not_csv.txt", b"\x89PNG\r\n\x1a\n\x00\x00binary", "FILE-06", NEG, "binary / non-CSV upload: rejected, no crash"),
-    ("file_bom.csv", b"\xef\xbb\xbf" + ",".join(HEADER).encode() + b"\r\n" + ",".join(GOOD_ROW).encode() + b"\r\n", "FILE-07", CORNER, "UTF-8 BOM (Excel export): first column still recognised, 1 imported"),
-    ("file_lf_endings.csv", ",".join(HEADER).encode() + b"\n" + ",".join(GOOD_ROW).encode() + b"\n", "FILE-08", CORNER, "Unix line endings: 1 imported"),
+    ("file_empty.csv", ",".join(HEADER).encode() + b"\r\n", "FILE-01", CORNER, "header only: summary 0/0/0/0, no crash", 0, 0),
+    ("file_zero_bytes.csv", b"", "FILE-02", NEG, "0-byte file: clear error, no crash", 0, 1),
+    ("file_bad_header.csv", b"id,from,to,sum,ccy,due,created\r\n" + ",".join(GOOD_ROW).encode() + b"\r\n", "FILE-03", NEG, "unknown header: whole file rejected with a clear message", 0, 1),
+    ("file_no_header.csv", ",".join(GOOD_ROW).encode() + b"\r\n", "FILE-04", NEG, "missing header row: rejected (or first row not silently lost)", 0, 1),
+    ("file_semicolon.csv", ";".join(HEADER).encode() + b"\r\n" + ";".join(GOOD_ROW).encode() + b"\r\n", "FILE-05", NEG, "semicolon delimiter (Excel NO locale): clear error or supported (confirm)", 0, 1),
+    ("file_not_csv.txt", b"\x89PNG\r\n\x1a\n\x00\x00binary", "FILE-06", NEG, "binary / non-CSV upload: rejected, no crash", 0, 1),
+    ("file_bom.csv", b"\xef\xbb\xbf" + ",".join(HEADER).encode() + b"\r\n" + ",".join(GOOD_ROW).encode() + b"\r\n", "FILE-07", CORNER, "UTF-8 BOM (Excel export): first column still recognised, 1 imported", 1, 0),
+    ("file_lf_endings.csv", ",".join(HEADER).encode() + b"\n" + ",".join(GOOD_ROW).encode() + b"\n", "FILE-08", CORNER, "Unix line endings: 1 imported", 1, 0),
     ("file_reordered_columns.csv", b"amount,transaction_id,currency,debtor_account,creditor_account,due_date,created_date\r\n100.00,T-FILE-01,NOK,"
-     + D_BASE.encode() + b"," + C_A.encode() + b",2026-10-15,2026-10-01\r\n", "FILE-09", CORNER, "columns in another order: read by name, 1 imported (confirm)"),
-    ("file_trailing_blank_lines.csv", ",".join(HEADER).encode() + b"\r\n" + ",".join(GOOD_ROW).encode() + b"\r\n\r\n\r\n", "FILE-10", CORNER, "blank lines at the end: not counted as errors"),
+     + D_BASE.encode() + b"," + C_A.encode() + b",2026-10-15,2026-10-01\r\n", "FILE-09", CORNER, "columns in another order: read by name, 1 imported (confirm)", 1, 0),
+    ("file_trailing_blank_lines.csv", ",".join(HEADER).encode() + b"\r\n" + ",".join(GOOD_ROW).encode() + b"\r\n\r\n\r\n", "FILE-10", CORNER, "blank lines at the end: not counted as errors", 1, 0),
     ("file_quoted_fields.csv", ",".join(HEADER).encode() + b'\r\n"T-FILE-01","' + D_BASE.encode() + b'","' + C_A.encode()
-     + b'","100.00","NOK","2026-10-15","2026-10-01"\r\n', "FILE-11", CORNER, "all fields quoted: 1 imported"),
+     + b'","100.00","NOK","2026-10-15","2026-10-01"\r\n', "FILE-11", CORNER, "all fields quoted: 1 imported", 1, 0),
 ]
 
 
@@ -181,7 +181,7 @@ def write_large(name, rows):
         w = csv.writer(f)
         w.writerow(HEADER)
         for i in range(rows):
-            w.writerow(row(f"T-BULK-{i:05d}", f"6000.11.{i % 500:05d}", f"7000.11.{i % 37:05d}", f"{(i * 37) % 20000}.{i % 100:02d}", "2026-11-15"))
+            w.writerow(row(f"T-BULK-{i:05d}", f"6000.11.{i % 500:05d}", f"7000.11.{i % 37:05d}", f"{(i * 37) % 20000 + 1}.{i % 100:02d}", "2026-11-15"))
 
 
 def expected(cases, file):
@@ -210,9 +210,9 @@ if __name__ == "__main__":
     for name, content, *_ in FILES:
         (HERE / "data" / name).write_bytes(content)
     transactions = expected(IMPORT1, "all_rules.csv") + expected(IMPORT2, "import2_followup.csv") + expected(ERRORS, "errors.csv")
-    files = [{"file": n, "case": c, "category": cat, "expect": e} for n, _, c, cat, e in FILES]
+    files = [{"file": n, "case": c, "category": cat, "expect": e, "imported": imp, "errors": err} for n, _, c, cat, e, imp, err in FILES]
     files.append({"file": "file_large_10k.csv", "case": "FILE-12", "category": CORNER,
-                  "expect": "10,000 rows import in reasonable time (< 30 s), page stays usable"})
+                  "expect": "10,000 rows import in reasonable time (< 30 s), page stays usable", "imported": 10000, "errors": 0})
     result = {
         "import_order": ["all_rules.csv", "import2_followup.csv", "errors.csv"],
         "summaries": {"all_rules.csv": summary(IMPORT1), "import2_followup.csv": summary(IMPORT2),
