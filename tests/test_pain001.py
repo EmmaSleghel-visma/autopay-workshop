@@ -128,3 +128,9 @@ def test_internal_dtd_entity_is_refused():
     result = parse(text)
     assert result.transactions == []
     assert "DOCTYPE" in result.errors[0].message
+
+
+def test_compact_requested_execution_date_is_rejected():
+    result = parse(doc(NS09, pmt_inf(tx("A"), reqd="<ReqdExctnDt><Dt>20261115</Dt></ReqdExctnDt>")))
+    assert result.transactions == []
+    assert "ReqdExctnDt" in result.errors[0].message

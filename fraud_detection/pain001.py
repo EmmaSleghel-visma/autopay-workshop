@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 from datetime import date
 from typing import TextIO
 
-from .importer import _parse_amount
+from .importer import _parse_amount, parse_iso_date
 from .models import ParseResult, RowError, Transaction, normalize_account
 
 SUPPORTED_NAMESPACES = {
@@ -121,6 +121,6 @@ def _due_date(node, q) -> date | None:
 def _date_part(raw: str) -> date | None:
     """ISODate and ISODateTime both start with YYYY-MM-DD."""
     try:
-        return date.fromisoformat(raw[:10])
+        return parse_iso_date(raw[:10])
     except ValueError:
         return None
