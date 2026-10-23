@@ -36,11 +36,11 @@ The **Transactions** link at the top shows everything imported so far, with the 
 
 | Flag | Meaning |
 |---|---|
-| HIGH_AMOUNT | Amount is above 10 000. The limit is in NOK and is applied to the number as it is, also for other currencies |
+| HIGH_AMOUNT | Amount is above the limit for its currency: NOK 10 000, SEK 10 000, EUR 1 000 (exactly the limit is not flagged) |
 | NEW_CREDITOR | This paying account has paid before, but never to this receiving account |
 | FAR_FUTURE_DUE | Due date is more than 3 months after the transaction was created (or imported, if no created date) |
 | PAST_DUE_DATE | Due date is before the transaction was created (or imported) |
-| UNSUPPORTED_CURRENCY | Currency is not NOK; amounts are not converted, so check it manually |
+| UNSUPPORTED_CURRENCY | Currency is not NOK, SEK or EUR; it has no amount limit, so check the amount manually |
 
 A flag means **"check this"**, not "this is fraud". Before the payment is sent, confirm it with the person who requested it, using contact details you already have, not the ones on the invoice. The app never blocks or changes a payment.
 
@@ -57,6 +57,7 @@ A flag means **"check this"**, not "this is fraud". Before the payment is sent, 
 
 - Windows PC, one user at a time; no user accounts.
 - CSV and pain.001 only. JSON import is planned for a later release.
+- NOK, SEK and EUR only; amounts are never converted between currencies.
 - Duplicates are recognised by transaction ID only.
 - Flags are rule-based and simple; they will not catch every fraud and will sometimes flag normal payments.
 
