@@ -88,3 +88,9 @@ def test_row_with_fewer_fields_than_header_is_rejected():
 def test_row_with_empty_optional_value_is_still_accepted():
     result = parse(HEADER + "t1,1,2,5.00,NOK,2026-11-30,\n")  # trailing comma = present but empty
     assert result.errors == []
+
+
+def test_error_line_numbers_count_blank_lines():
+    result = parse(HEADER + "t1,1,2,5.00,NOK,2026-11-30,\n\nt2,1,2,abc,NOK,2026-11-30,\n")
+    assert [t.transaction_id for t in result.transactions] == ["t1"]
+    assert [e.line for e in result.errors] == [4]
