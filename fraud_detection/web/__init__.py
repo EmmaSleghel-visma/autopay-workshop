@@ -34,7 +34,9 @@ def create_app(db_path: str | None = None) -> Flask:
         if upload_file is None or not upload_file.filename:
             response = render_template("upload.html", error="Choose a file to upload."), 400
         else:
-            source = io.TextIOWrapper(upload_file.stream, encoding="utf-8", newline="")
+            # Wrap the bytes, not upload_file.stream: on Python 3.10 that stream is a
+            # SpooledTemporaryFile without readable(), which TextIOWrapper needs (added in 3.11).
+            source = io.TextIOWrapper(io.BytesIO(upload_file.read()), encoding="utf-8", newline="")
             summary = import_transactions(
                 source,
                 importer_for(upload_file.filename),

@@ -136,3 +136,15 @@ def test_reasons_refer_to_the_import_date_when_there_is_no_created_date(tmp_path
     c = client(tmp_path)
     upload(c, (HEADER + "a,D1,C1,5.00,NOK,2000-01-01,\n").encode(), "old.csv")
     assert "Due date before the import date" in c.get("/transactions").get_data(as_text=True)
+
+
+def test_upload_works_when_the_upload_stream_has_no_readable(tmp_path, monkeypatch):
+    # Simulates Python 3.10, where SpooledTemporaryFile has no readable()/seekable().
+    import tempfile
+
+    monkeypatch.delattr(tempfile.SpooledTemporaryFile, "readable", raising=False)
+    monkeypatch.delattr(tempfile.SpooledTemporaryFile, "seekable", raising=False)
+    big = HEADER + "".join(f"s{i},D1,C1,5.00,NOK,2026-11-15,2026-10-20\n" for i in range(20000))  # > 500 KB, so spooled
+    response = upload(client(tmp_path), big.encode(), "big.csv")
+    assert response.status_code == 200
+    assert "Imported: 20000" in response.get_data(as_text=True)
