@@ -705,7 +705,7 @@
       "transaction_id": "T-ERR-13",
       "status": "ERROR",
       "flags": [],
-      "note": "row with a missing column"
+      "note": "row with fewer values than the header: rejected (PO 10:08)"
     },
     {
       "file": "errors.csv",
@@ -714,7 +714,7 @@
       "transaction_id": "T-ERR-14",
       "status": "ERROR",
       "flags": [],
-      "note": "row with an extra column"
+      "note": "row with more values than the header: rejected (PO 10:08)"
     },
     {
       "file": "errors.csv",

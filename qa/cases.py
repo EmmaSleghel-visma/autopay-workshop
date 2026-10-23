@@ -142,8 +142,8 @@ ERRORS = [
     (["T-ERR-10", D_BASE, C_A, "100.00", "NOK", "", "2026-10-01"], "ERROR", "ERR-10", NEG, "missing due date"),
     (["T-ERR-11", D_BASE, C_A, "10000,50", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-11", NEG, "comma decimal separator (confirm: error or 10000.50?)"),
     (["T-ERR-12", D_BASE, C_A, "0.00", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-12", CORNER, "zero amount: rejected (PO)"),
-    (["T-ERR-13", D_BASE, C_A, "100.00", "NOK", "2026-10-15"], "ERROR", "ERR-13", NEG, "row with a missing column"),
-    (["T-ERR-14", D_BASE, C_A, "100.00", "NOK", "2026-10-15", "2026-10-01", "extra"], "ERROR", "ERR-14", NEG, "row with an extra column"),
+    (["T-ERR-13", D_BASE, C_A, "100.00", "NOK", "2026-10-15"], "ERROR", "ERR-13", NEG, "row with fewer values than the header: rejected (PO 10:08)"),
+    (["T-ERR-14", D_BASE, C_A, "100.00", "NOK", "2026-10-15", "2026-10-01", "extra"], "ERROR", "ERR-14", NEG, "row with more values than the header: rejected (PO 10:08)"),
     (["T-ERR-15", D_BASE, C_A, "   ", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-15", NEG, "whitespace-only amount"),
     (["T-OK-01", D_BASE, C_A, "100.00", "NOK", "2026-10-15", "2026-10-01"], [], "ERR-OK", POS, "valid row among bad ones is still imported"),
 ]
