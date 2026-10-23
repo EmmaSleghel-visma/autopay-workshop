@@ -6,8 +6,8 @@
   ],
   "summaries": {
     "all_rules.csv": {
-      "imported": 49,
-      "flagged": 18,
+      "imported": 52,
+      "flagged": 22,
       "duplicates": 1,
       "errors": 0
     },
@@ -190,7 +190,7 @@
       "transaction_id": "T-R3-03",
       "status": "IMPORTED",
       "flags": [],
-      "note": "month end: Jan 31 + 3m = Apr 30 (confirm)"
+      "note": "month end: Jan 31 + 3m = Apr 30 (PO: last day of month)"
     },
     {
       "file": "all_rules.csv",
@@ -238,8 +238,32 @@
       "category": "NEG",
       "transaction_id": "T-R3-08",
       "status": "IMPORTED",
-      "flags": [],
-      "note": "due date before created date: not R3 (confirm)"
+      "flags": [
+        "PAST_DUE_DATE"
+      ],
+      "note": "due date before created date: PAST_DUE_DATE, row kept (PO)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-16",
+      "category": "CORNER",
+      "transaction_id": "T-R3-16",
+      "status": "IMPORTED",
+      "flags": [
+        "PAST_DUE_DATE"
+      ],
+      "note": "no created_date, due the day before import date: PAST_DUE_DATE"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-17",
+      "category": "CORNER",
+      "transaction_id": "T-R3-17",
+      "status": "IMPORTED",
+      "flags": [
+        "PAST_DUE_DATE"
+      ],
+      "note": "due one day before created date: PAST_DUE_DATE"
     },
     {
       "file": "all_rules.csv",
@@ -456,9 +480,23 @@
       "transaction_id": "T-CUR-02",
       "status": "IMPORTED",
       "flags": [
+        "R1_AMOUNT_OVER_10000",
         "UNSUPPORTED_CURRENCY"
       ],
-      "note": "non-NOK over limit: are rules still applied? (confirm)"
+      "note": "non-NOK over limit: other rules still apply (PO)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-05",
+      "category": "NEG",
+      "transaction_id": "T-CUR-05",
+      "status": "IMPORTED",
+      "flags": [
+        "R2_NEW_CREDITOR",
+        "R3_DUE_DATE_OVER_3_MONTHS",
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "non-NOK + new creditor + far due: all flags (PO)"
     },
     {
       "file": "all_rules.csv",
@@ -613,7 +651,7 @@
       "transaction_id": "T-ERR-07",
       "status": "ERROR",
       "flags": [],
-      "note": "negative amount (confirm: error or accepted?)"
+      "note": "negative amount: rejected (PO)"
     },
     {
       "file": "errors.csv",
@@ -658,7 +696,7 @@
       "transaction_id": "T-ERR-12",
       "status": "ERROR",
       "flags": [],
-      "note": "zero amount (confirm: error or accepted?)"
+      "note": "zero amount: rejected (PO)"
     },
     {
       "file": "errors.csv",

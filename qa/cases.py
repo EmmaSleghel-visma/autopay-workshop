@@ -28,6 +28,7 @@ R1 = "R1_AMOUNT_OVER_10000"
 R2 = "R2_NEW_CREDITOR"
 R3 = "R3_DUE_DATE_OVER_3_MONTHS"
 CUR = "UNSUPPORTED_CURRENCY"
+PAST = "PAST_DUE_DATE"
 POS, NEG, CORNER = "POS", "NEG", "CORNER"
 
 D_BASE = "1234.56.78901"
@@ -68,12 +69,14 @@ IMPORT1 = [
     # R3 due date vs created_date + 3 calendar months
     (row("T-R3-01", D_BASE, C_A, "100.00", "2027-01-01", "2026-10-01"), [], "R3-01", CORNER, "exactly 3 months is not flagged"),
     (row("T-R3-02", D_BASE, C_A, "100.00", "2027-01-02", "2026-10-01"), [R3], "R3-02", CORNER, "3 months + 1 day"),
-    (row("T-R3-03", D_BASE, C_A, "100.00", "2026-04-30", "2026-01-31"), [], "R3-03", CORNER, "month end: Jan 31 + 3m = Apr 30 (confirm)"),
+    (row("T-R3-03", D_BASE, C_A, "100.00", "2026-04-30", "2026-01-31"), [], "R3-03", CORNER, "month end: Jan 31 + 3m = Apr 30 (PO: last day of month)"),
     (row("T-R3-04", D_BASE, C_A, "100.00", "2026-05-01", "2026-01-31"), [R3], "R3-04", CORNER, "month end + 1 day"),
     (row("T-R3-05", D_BASE, C_A, "100.00", "2026-02-28", "2025-11-30"), [], "R3-05", CORNER, "Nov 30 + 3m = Feb 28 (non-leap)"),
     (row("T-R3-06", D_BASE, C_A, "100.00", "2026-03-01", "2025-11-30"), [R3], "R3-06", CORNER, "Feb 28 + 1 day"),
     (row("T-R3-07", D_BASE, C_A, "100.00", "2028-02-29", "2027-11-29"), [], "R3-07", CORNER, "leap year: Nov 29 + 3m = Feb 29"),
-    (row("T-R3-08", D_BASE, C_A, "100.00", "2026-09-01", "2026-10-01"), [], "R3-08", NEG, "due date before created date: not R3 (confirm)"),
+    (row("T-R3-08", D_BASE, C_A, "100.00", "2026-09-01", "2026-10-01"), [PAST], "R3-08", NEG, "due date before created date: PAST_DUE_DATE, row kept (PO)"),
+    (row("T-R3-16", D_BASE, C_A, "100.00", "2026-10-22", ""), [PAST], "R3-16", CORNER, "no created_date, due the day before import date: PAST_DUE_DATE"),
+    (row("T-R3-17", D_BASE, C_A, "100.00", "2026-09-30", "2026-10-01"), [PAST], "R3-17", CORNER, "due one day before created date: PAST_DUE_DATE"),
     (row("T-R3-09", D_BASE, C_A, "100.00", "2099-12-31", ""), [R3], "R3-09", POS, "no created_date: compared to import date"),
     (row("T-R3-10", D_BASE, C_A, "100.00", "2026-10-23", ""), [], "R3-10", CORNER, "no created_date, due on import date"),
     (row("T-R3-11", D_BASE, C_A, "100.00", "2026-10-01", "2026-10-01"), [], "R3-11", CORNER, "due date equals created date"),
@@ -103,7 +106,8 @@ IMPORT1 = [
 
     # Currency
     (row("T-CUR-01", D_BASE, C_A, "100.00", "2026-10-15", currency="EUR"), [CUR], "CUR-01", NEG, "non-NOK"),
-    (row("T-CUR-02", D_BASE, C_A, "50000.00", "2026-10-15", currency="SEK"), [CUR], "CUR-02", NEG, "non-NOK over limit: are rules still applied? (confirm)"),
+    (row("T-CUR-02", D_BASE, C_A, "50000.00", "2026-10-15", currency="SEK"), [CUR, R1], "CUR-02", NEG, "non-NOK over limit: other rules still apply (PO)"),
+    (row("T-CUR-05", D_POS, C_C, "100.00", "2027-06-01", currency="EUR"), [CUR, R2, R3], "CUR-05", NEG, "non-NOK + new creditor + far due: all flags (PO)"),
     (row("T-CUR-03", D_BASE, C_A, "100.00", "2026-10-15", currency="nok"), [], "CUR-03", CORNER, "lowercase nok accepted as NOK (confirm)"),
     (row("T-CUR-04", D_BASE, C_A, "100.00", "2026-10-15", currency=" NOK "), [], "CUR-04", CORNER, "padded NOK accepted (confirm)"),
 
@@ -132,12 +136,12 @@ ERRORS = [
     (["T-ERR-04", D_BASE, C_A, "100.00", "NOK", "2026-02-30", "2026-10-01"], "ERROR", "ERR-04", NEG, "impossible date"),
     (["T-ERR-05", "", C_A, "100.00", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-05", NEG, "missing debtor"),
     (["", D_BASE, C_A, "100.00", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-06", NEG, "missing transaction id"),
-    (["T-ERR-07", D_BASE, C_A, "-500.00", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-07", NEG, "negative amount (confirm: error or accepted?)"),
+    (["T-ERR-07", D_BASE, C_A, "-500.00", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-07", NEG, "negative amount: rejected (PO)"),
     (["T-ERR-08", D_BASE, C_A, "100.00", "", "2026-10-15", "2026-10-01"], "ERROR", "ERR-08", NEG, "missing currency"),
     (["T-ERR-09", D_BASE, "", "100.00", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-09", NEG, "missing creditor"),
     (["T-ERR-10", D_BASE, C_A, "100.00", "NOK", "", "2026-10-01"], "ERROR", "ERR-10", NEG, "missing due date"),
     (["T-ERR-11", D_BASE, C_A, "10000,50", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-11", NEG, "comma decimal separator (confirm: error or 10000.50?)"),
-    (["T-ERR-12", D_BASE, C_A, "0.00", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-12", CORNER, "zero amount (confirm: error or accepted?)"),
+    (["T-ERR-12", D_BASE, C_A, "0.00", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-12", CORNER, "zero amount: rejected (PO)"),
     (["T-ERR-13", D_BASE, C_A, "100.00", "NOK", "2026-10-15"], "ERROR", "ERR-13", NEG, "row with a missing column"),
     (["T-ERR-14", D_BASE, C_A, "100.00", "NOK", "2026-10-15", "2026-10-01", "extra"], "ERROR", "ERR-14", NEG, "row with an extra column"),
     (["T-ERR-15", D_BASE, C_A, "   ", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-15", NEG, "whitespace-only amount"),

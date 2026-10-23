@@ -18,6 +18,7 @@ FLAG_ALIASES = {
     "R2_NEW_CREDITOR": ["r2", "new_creditor"],
     "R3_DUE_DATE_OVER_3_MONTHS": ["r3", "far_future_due"],
     "UNSUPPORTED_CURRENCY": ["currency", "unsupported_currency", "unsupported currency"],
+    "PAST_DUE_DATE": ["past_due_date", "due date in the past"],
 }
 
 
