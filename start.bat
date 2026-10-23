@@ -2,18 +2,21 @@
 rem Fraud Detection MVP - double-click to start. The first start sets everything up.
 cd /d "%~dp0"
 
-where py >nul 2>nul
-if errorlevel 1 (
+rem Use the py launcher if present (python.org installs it), otherwise python on PATH.
+set "PY="
+where py >nul 2>nul && set "PY=py -3"
+if not defined PY where python >nul 2>nul && set "PY=python"
+if not defined PY (
     echo Python is not installed.
     echo Install Python 3.10 or newer from https://www.python.org/downloads/
-    echo and tick "Add python.exe to PATH" in the installer. Then start this file again.
+    echo and keep the default options in the installer. Then start this file again.
     pause
     exit /b 1
 )
 
 if not exist ".venv\Scripts\python.exe" (
     echo First start: setting up the app. This takes a minute and needs internet once...
-    py -3 -m venv .venv || goto :error
+    %PY% -m venv .venv || goto :error
     ".venv\Scripts\python.exe" -m pip install --disable-pip-version-check -q -r requirements.txt || goto :error
 )
 
