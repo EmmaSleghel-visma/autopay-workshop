@@ -44,6 +44,8 @@ def evaluate(tx: Transaction, history: History, import_date: date) -> list[str]:
     start = tx.created_date if tx.created_date is not None else import_date
     if tx.due_date > _add_months(start, FAR_FUTURE_MONTHS):
         flags.append(FAR_FUTURE_DUE)
+    if tx.due_date < start:
+        flags.append(PAST_DUE_DATE)
     if tx.currency != SUPPORTED_CURRENCY:
         flags.append(UNSUPPORTED_CURRENCY)
     return flags

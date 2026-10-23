@@ -9,6 +9,7 @@ from fraud_detection.rules import (
     FAR_FUTURE_DUE,
     HIGH_AMOUNT,
     NEW_CREDITOR,
+    PAST_DUE_DATE,
     UNSUPPORTED_CURRENCY,
     evaluate,
 )
@@ -100,10 +101,53 @@ def test_without_created_date_counts_from_import_date():
     assert flags_of(tx(created=None, due=date(2027, 1, 24))) == [FAR_FUTURE_DUE]
 
 
+def test_month_end_uses_last_day_of_shorter_month():
+    assert flags_of(tx(created=date(2026, 1, 31), due=date(2026, 4, 30))) == []
+    assert flags_of(tx(created=date(2026, 1, 31), due=date(2026, 5, 1))) == [FAR_FUTURE_DUE]
+
+
+def test_month_end_in_a_leap_year():
+    assert flags_of(tx(created=date(2027, 11, 30), due=date(2028, 2, 29))) == []
+    assert flags_of(tx(created=date(2027, 11, 30), due=date(2028, 3, 1))) == [FAR_FUTURE_DUE]
+
+
+# PAST_DUE_DATE
+
+def test_due_date_before_created_date_is_past_due():
+    assert flags_of(tx(created=date(2026, 10, 1), due=date(2026, 9, 30))) == [PAST_DUE_DATE]
+
+
+def test_due_date_on_created_date_is_not_past_due():
+    assert flags_of(tx(created=date(2026, 10, 1), due=date(2026, 10, 1))) == []
+
+
+def test_without_created_date_past_due_counts_from_import_date():
+    assert flags_of(tx(created=None, due=date(2026, 10, 22))) == [PAST_DUE_DATE]
+    assert flags_of(tx(created=None, due=date(2026, 10, 23))) == []
+
+
 # Rule 4: UNSUPPORTED_CURRENCY
 
 def test_non_nok_currency_is_unsupported():
     assert flags_of(tx(currency="EUR")) == [UNSUPPORTED_CURRENCY]
+
+
+def test_non_nok_still_gets_the_other_rules():
+    transaction = tx(amount="25000.00", currency="EUR", created=date(2026, 1, 15),
+                     due=date(2026, 6, 1), creditor="B")
+    assert flags_of(transaction, FakeHistory({("D1", "A")})) == [
+        HIGH_AMOUNT,
+        NEW_CREDITOR,
+        FAR_FUTURE_DUE,
+        UNSUPPORTED_CURRENCY,
+    ]
+
+
+def test_non_nok_past_due_date_gets_both_flags():
+    assert flags_of(tx(currency="SEK", created=date(2026, 10, 1), due=date(2026, 9, 1))) == [
+        PAST_DUE_DATE,
+        UNSUPPORTED_CURRENCY,
+    ]
 
 
 # All rules together
