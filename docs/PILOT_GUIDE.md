@@ -7,20 +7,12 @@ It runs on your own Windows PC and you use it in your web browser.
 
 1. Install **Python 3.10 or newer** from python.org. In the installer, tick **"Add python.exe to PATH"**.
 2. Unzip the app folder you received from us, for example to `C:\FraudDetection`.
-3. Open that folder, click the address bar, type `cmd` and press Enter. In the black window, paste:
-   ```
-   py -3 -m venv .venv
-   .venv\Scripts\pip install -r requirements.txt
-   ```
-   This downloads the app's components once. Afterwards the app needs no internet connection.
 
 ## 2. Start the app
 
-In the same black window (open it as in step 3 above), paste:
-```
-.venv\Scripts\flask --app "fraud_detection.web:create_app()" run
-```
-Then open **http://127.0.0.1:5000** in your browser. Keep the black window open while you use the app; close it to stop the app.
+Double-click **`start.bat`** in the app folder. The first time, it sets the app up (about a minute, needs internet once).
+Your browser then opens **http://127.0.0.1:5000**. If the page does not load at once, refresh it.
+Keep the black window open while you use the app; close it to stop the app.
 
 ## 3. Import a file
 
