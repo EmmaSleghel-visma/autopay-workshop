@@ -225,9 +225,24 @@ def test_pain001_control_totals_not_matching_content(tmp_path, capsys):
     assert not failures, "\n".join(failures)
 
 
-@pytest.mark.skip(reason="web pages not built yet")
-def test_web_pages_escape_html_in_imported_fields():
-    """Upload a CSV whose transaction_id, accounts and currency contain <script>alert(1)</script>,
-    <img src=x onerror=alert(1)> and "><svg onload=alert(1)>, then GET the transaction list and the
-    import summary pages: the raw tags must not appear, only their escaped form (&lt;script&gt;...),
-    and error messages that echo a bad value (e.g. amount '<b>x</b>') must be escaped too."""
+def test_web_pages_escape_html_in_imported_fields(tmp_path):
+    """Script, img-onerror and svg-onload payloads in ids, accounts, currency and a bad amount are shown escaped on every page."""
+    from fraud_detection.web import create_app
+    payloads = ["<script>alert(1)</script>", "<img src=x onerror=alert(1)>", "\"><svg onload=alert(1)>"]
+    rows = ["transaction_id,debtor_account,creditor_account,amount,currency,due_date,created_date"]
+    for i, p in enumerate(payloads):
+        q = p.replace('"', '""')
+        rows.append(f'"X{i}{q}","{q}","{q}",100.00,"{q}",2026-11-01,2026-10-01')
+    rows.append("XB,1,2,<b>x</b>,NOK,2026-11-01,2026-10-01")
+    app = create_app(str(tmp_path / "xss.db"))
+    client = app.test_client()
+    summary = client.post("/upload", data={"file": (io.BytesIO("\n".join(rows).encode()), "<b>name</b>.csv")},
+                          content_type="multipart/form-data").get_data(as_text=True)
+    table = client.get("/transactions").get_data(as_text=True)
+    failures = []
+    for page, html in (("summary", summary), ("transactions", table)):
+        for raw in payloads + ["<b>x</b>", "<b>name</b>"]:
+            if raw in html:
+                failures.append(f"{page}: raw {raw!r} rendered unescaped")
+    assert "&lt;script&gt;" in table, "escaped script payload not shown on the transactions page"
+    assert not failures, "\n".join(failures)
