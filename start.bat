@@ -10,17 +10,21 @@ set "CHECK=import sys; sys.exit(sys.version_info < (3, 10))"
 py -3 -c "%CHECK%" >nul 2>nul && set "PY=py -3"
 if not defined PY python -c "%CHECK%" >nul 2>nul && set "PY=python"
 if not defined PY (
-    echo Python 3.10 or newer is not installed.
+    echo Python 3.10 or newer was not found.
     echo Install Python 3.10 or newer from https://www.python.org/downloads/
     echo and keep the default options in the installer. Then start this file again.
     pause
     exit /b 1
 )
 
-if not exist ".venv\Scripts\python.exe" (
-    echo First start: setting up the app. This takes a minute and needs internet once...
+rem setup-ok.txt is written only after a complete setup, so an interrupted or failed
+rem first start (no internet, window closed) is redone instead of leaving a broken app.
+if not exist ".venv\setup-ok.txt" (
+    echo Setting up the app. This takes a minute and needs internet...
+    if exist ".venv" rmdir /s /q ".venv"
     %PY% -m venv .venv || goto :error
     ".venv\Scripts\python.exe" -m pip install --disable-pip-version-check -q -r requirements.txt || goto :error
+    echo ok> ".venv\setup-ok.txt"
 )
 
 echo.
