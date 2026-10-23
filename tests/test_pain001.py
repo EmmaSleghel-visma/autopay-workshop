@@ -102,7 +102,7 @@ def test_entity_expansion_bomb_is_refused():
             + f']><Document xmlns="{NS09}">&j;</Document>')
     result = parse(bomb)
     assert result.transactions == []
-    assert "not valid XML" in result.errors[0].message
+    assert "DOCTYPE" in result.errors[0].message
 
 
 def test_history_matches_across_csv_and_xml(tmp_path):
@@ -120,3 +120,11 @@ def test_history_matches_across_csv_and_xml(tmp_path):
 def test_importer_for_picks_by_extension():
     assert isinstance(importer_for("customer.XML"), Pain001Importer)
     assert isinstance(importer_for("transactions.csv"), CsvImporter)
+
+
+def test_internal_dtd_entity_is_refused():
+    text = doc(NS09, pmt_inf(tx("&e2e;"))).replace(
+        "<Document", '<!DOCTYPE Document [<!ENTITY e2e "DTD-E2E-01">]><Document', 1)
+    result = parse(text)
+    assert result.transactions == []
+    assert "DOCTYPE" in result.errors[0].message
