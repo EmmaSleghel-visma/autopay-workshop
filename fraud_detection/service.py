@@ -32,16 +32,23 @@ def import_transactions(
     evaluate: Evaluate,
     import_date: date,
 ) -> ImportSummary:
-    """Rows are processed in file order, so earlier rows in the same file count as history."""
-    parsed = importer.parse(source)
+    """Rows are processed in file order, so earlier rows in the same file count as history.
+
+    The whole file is parsed before anything is stored, and stored in one database transaction.
+    """
+    try:
+        parsed = importer.parse(source)
+    except UnicodeDecodeError as exc:
+        return ImportSummary(errors=[RowError(0, f"file is not UTF-8 text (save it as CSV UTF-8): {exc.reason} at byte {exc.start}")])
     summary = ImportSummary(errors=parsed.errors)
-    for tx in parsed.transactions:
-        if store.exists(tx.transaction_id):
-            summary.duplicates.append(tx.transaction_id)
-            continue
-        flags = evaluate(tx, store, import_date)
-        store.add(tx, import_date, flags)
-        summary.imported += 1
-        if flags:
-            summary.flagged += 1
+    with store.batch():
+        for tx in parsed.transactions:
+            if store.exists(tx.transaction_id):
+                summary.duplicates.append(tx.transaction_id)
+                continue
+            flags = evaluate(tx, store, import_date)
+            store.add(tx, import_date, flags)
+            summary.imported += 1
+            if flags:
+                summary.flagged += 1
     return summary
