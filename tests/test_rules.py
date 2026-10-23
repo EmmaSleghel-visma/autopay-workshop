@@ -128,23 +128,34 @@ def test_without_created_date_past_due_counts_from_import_date():
 
 # Rule 4: UNSUPPORTED_CURRENCY
 
-def test_non_nok_currency_is_unsupported():
-    assert flags_of(tx(currency="EUR")) == [UNSUPPORTED_CURRENCY]
+def test_nok_sek_and_eur_are_supported():
+    for currency in ("NOK", "SEK", "EUR"):
+        assert flags_of(tx(amount="500.00", currency=currency)) == []
 
 
-def test_non_nok_still_gets_the_other_rules():
-    transaction = tx(amount="25000.00", currency="EUR", created=date(2026, 1, 15),
+def test_high_amount_limit_per_currency_without_conversion():
+    for currency, limit in (("NOK", "10000.00"), ("SEK", "10000.00"), ("EUR", "1000.00")):
+        assert flags_of(tx(amount=limit, currency=currency)) == []
+        above = str(Decimal(limit) + Decimal("0.01"))
+        assert flags_of(tx(amount=above, currency=currency)) == [HIGH_AMOUNT]
+
+
+def test_other_currency_is_unsupported_and_gets_no_high_amount():
+    assert flags_of(tx(amount="25000.00", currency="USD")) == [UNSUPPORTED_CURRENCY]
+
+
+def test_unsupported_currency_still_gets_the_other_rules():
+    transaction = tx(amount="25000.00", currency="USD", created=date(2026, 1, 15),
                      due=date(2026, 6, 1), creditor="B")
     assert flags_of(transaction, FakeHistory({("D1", "A")})) == [
-        HIGH_AMOUNT,
         NEW_CREDITOR,
         FAR_FUTURE_DUE,
         UNSUPPORTED_CURRENCY,
     ]
 
 
-def test_non_nok_past_due_date_gets_both_flags():
-    assert flags_of(tx(currency="SEK", created=date(2026, 10, 1), due=date(2026, 9, 1))) == [
+def test_unsupported_currency_past_due_date_gets_both_flags():
+    assert flags_of(tx(currency="DKK", created=date(2026, 10, 1), due=date(2026, 9, 1))) == [
         PAST_DUE_DATE,
         UNSUPPORTED_CURRENCY,
     ]

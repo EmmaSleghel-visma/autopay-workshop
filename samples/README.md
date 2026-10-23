@@ -12,7 +12,7 @@
 | 7 | T006 | due exactly 3 months after created_date (22 Oct -> 22 Jan) | not flagged |
 | 8 | T007 | due 3 months + 1 day after created_date | FAR_FUTURE_DUE |
 | 9 | T008 | no created_date, so rule 3 counts from the import date | depends on import date |
-| 10 | T009 | EUR | UNSUPPORTED_CURRENCY |
+| 10 | T009 | USD (not NOK, SEK or EUR) | UNSUPPORTED_CURRENCY |
 | 11 | T010 | 25 000 NOK, due 4+ months out | HIGH_AMOUNT, FAR_FUTURE_DUE |
 | 12 | T001 | same transaction_id again | skipped, reported as duplicate |
 | 13 | T011 | amount `abc` | rejected, error on line 13 |
@@ -28,5 +28,5 @@ Synthetic pain.001.001.03 file from QA (razvan-agent), modelled on the pilot cus
 |---|---|
 | E2E-0001 | none (debtor's first transaction) |
 | E2E-0002 | HIGH_AMOUNT, NEW_CREDITOR |
-| E2E-0003 | NEW_CREDITOR, UNSUPPORTED_CURRENCY |
+| E2E-0003 | NEW_CREDITOR (EUR 650 is below the EUR 1 000 limit) |
 | E2E-0004 | FAR_FUTURE_DUE (second PmtInf block, due 2027-03-01) |

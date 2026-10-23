@@ -59,7 +59,7 @@ def test_customer_v03_sample_gives_qa_expected_flags(tmp_path):
     assert flags == {
         "E2E-0001": set(),
         "E2E-0002": {"HIGH_AMOUNT", "NEW_CREDITOR"},
-        "E2E-0003": {"NEW_CREDITOR", "UNSUPPORTED_CURRENCY"},
+        "E2E-0003": {"NEW_CREDITOR"},  # EUR is supported; 650 < EUR 1 000
         "E2E-0004": {"FAR_FUTURE_DUE"},
     }
 
