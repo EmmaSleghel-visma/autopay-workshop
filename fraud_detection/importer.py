@@ -1,6 +1,7 @@
 """Transaction importers. The CSV importer is the MVP format; others can implement Importer."""
 
 import csv
+import re
 from datetime import date
 from decimal import Decimal, InvalidOperation
 from typing import Protocol, TextIO
@@ -90,8 +91,19 @@ def _parse_amount(raw: str) -> Decimal:
     return amount
 
 
+ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
+
+
+def parse_iso_date(raw: str) -> date:
+    """Strict YYYY-MM-DD. date.fromisoformat alone also accepts '20261115' and week dates
+    from Python 3.11 on, so the same file would import differently per Python version."""
+    if not ISO_DATE.fullmatch(raw):
+        raise ValueError(raw)
+    return date.fromisoformat(raw)
+
+
 def _parse_date(column: str, raw: str) -> date:
     try:
-        return date.fromisoformat(raw)
+        return parse_iso_date(raw)
     except ValueError:
         raise ValueError(f"{column} is not a YYYY-MM-DD date: {raw!r}") from None

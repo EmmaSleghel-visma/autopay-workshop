@@ -109,3 +109,11 @@ def test_oversized_header_line_rejects_the_file_without_crash():
     assert result.transactions == []
     assert result.errors[0].line == 1
     assert "header line could not be read" in result.errors[0].message
+
+
+def test_only_yyyy_mm_dd_dates_are_accepted_on_every_python_version():
+    # Python 3.11+ date.fromisoformat also accepts these; 3.10 does not.
+    for bad in ("20261130", "2026-W49-1", "2026-11-30T00:00", " 2026-11-30x"):
+        result = parse(HEADER + f"t1,1,2,5.00,NOK,{bad},\n")
+        assert result.transactions == [], bad
+        assert "YYYY-MM-DD" in result.errors[0].message
