@@ -85,3 +85,13 @@ def test_corrupt_database_file_gives_a_clear_error(tmp_path):
     db.write_bytes(b"this is not a database" * 100)
     with pytest.raises(StorageError, match="not a valid database file.*backup"):
         TransactionStore(db)
+
+
+def test_page_returns_newest_first_with_offset_and_limit(tmp_path):
+    store = TransactionStore(tmp_path / "fraud.db")
+    for i in range(1, 6):
+        store.add(tx(f"t{i}"), date(2026, 10, 23), [])
+    assert store.count() == 5
+    assert [s.transaction.transaction_id for s in store.page(0, 2)] == ["t5", "t4"]
+    assert [s.transaction.transaction_id for s in store.page(4, 2)] == ["t1"]
+    assert store.page(5, 2) == []

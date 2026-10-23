@@ -1,6 +1,7 @@
 """Flask app factory. Pages (upload, transaction list, import summary) are owned by Iulia."""
 
 import io
+import math
 import os
 from datetime import date
 
@@ -9,8 +10,10 @@ from flask import Flask, current_app, render_template, request
 from .. import rules
 from ..service import import_transactions, importer_for
 from ..storage import TransactionStore
+from .reasons import reason
 
 DEFAULT_DB = "fraud_detection.db"
+PAGE_SIZE = 100  # transactions per page, newest first
 
 
 def create_app(db_path: str | None = None) -> Flask:
@@ -44,6 +47,21 @@ def create_app(db_path: str | None = None) -> Flask:
 
     @app.get("/transactions")
     def transactions():
-        return render_template("transactions.html", transactions=current_app.config["STORE"].all())
+        store = current_app.config["STORE"]
+        total = store.count()
+        pages = max(1, math.ceil(total / PAGE_SIZE))
+        page = min(max(request.args.get("page", 1, type=int), 1), pages)
+        offset = (page - 1) * PAGE_SIZE
+        rows = store.page(offset, PAGE_SIZE)
+        return render_template(
+            "transactions.html",
+            transactions=rows,
+            page=page,
+            pages=pages,
+            total=total,
+            first=offset + 1 if rows else 0,
+            last=offset + len(rows),
+            reason=reason,
+        )
 
     return app
