@@ -151,13 +151,18 @@ def test_csv_random_text_after_valid_header(text):
     assert_clean(result_problems(*parse(CsvImporter(), text)), text)
 
 
+def rows_to_csv(rows):
+    """csv.writer on Python 3.10 cannot write NUL; raw NUL bytes are covered by the mutation tests."""
+    buf = io.StringIO(newline="")
+    buf.write(HEADER + "\r\n")
+    csv.writer(buf).writerows([[f.replace("\x00", "") for f in r] for r in rows])
+    return buf.getvalue()
+
+
 @FUZZ
 @given(ROWS)
 def test_csv_random_rows(rows):
-    buf = io.StringIO(newline="")
-    buf.write(HEADER + "\r\n")
-    csv.writer(buf).writerows(rows)
-    text = buf.getvalue()
+    text = rows_to_csv(rows)
     assert_clean(result_problems(*parse(CsvImporter(), text)), text)
 
 
@@ -185,10 +190,7 @@ def test_csv_mutations_through_pipeline(mutations):
 @FUZZ
 @given(ROWS)
 def test_csv_random_rows_through_pipeline(rows):
-    buf = io.StringIO(newline="")
-    buf.write(HEADER + "\r\n")
-    csv.writer(buf).writerows(rows)
-    text = buf.getvalue()
+    text = rows_to_csv(rows)
     assert_clean(pipeline_problems(CsvImporter(), text), text)
 
 
