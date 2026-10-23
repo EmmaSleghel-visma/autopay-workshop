@@ -46,6 +46,8 @@ class CsvImporter:
     def _parse_row(self, row: dict[str, str | None]) -> Transaction:
         if row.get(None):  # DictReader puts values beyond the header under the None key
             raise ValueError(f"more fields than the header has columns: extra {row[None]!r}")
+        if any(v is None for k, v in row.items() if k is not None):  # ... and None for missing ones
+            raise ValueError("fewer fields than the header has columns")
         values = {k: (v or "").strip() for k, v in row.items() if k is not None}
         empty = [c for c in REQUIRED_COLUMNS if not values.get(c)]
         if empty:

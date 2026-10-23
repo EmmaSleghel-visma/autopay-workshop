@@ -30,7 +30,7 @@ Supported files:
 - **CSV**, UTF-8, with the columns `transaction_id, debtor_account, creditor_account, amount, currency, due_date, created_date` (`created_date` optional, dates as `YYYY-MM-DD`, `.` as decimal separator). In Excel, save as **"CSV UTF-8"**.
 - **ISO 20022 pain.001** XML, versions 001.001.03 and 001.001.09.
 
-After each import you see a summary: how many transactions were **imported**, **flagged**, skipped as **duplicates** (already imported earlier), and **errors** (rows that could not be read, with the line or transaction and the reason). Fix the rows with errors and import them again; already imported transactions are skipped automatically.
+After each import you see a summary: how many transactions were **imported**, **flagged**, skipped as **duplicates** (already imported earlier), and **errors** (rows that could not be read, for example with too few or too many values, with the line or transaction and the reason). Fix the rows with errors and import them again; already imported transactions are skipped automatically.
 
 ## 4. What the flags mean
 
@@ -59,7 +59,6 @@ A flag means **"check this"**, not "this is fraud". Before the payment is sent, 
 - CSV and pain.001 only. JSON import is planned for the pilot phase.
 - NOK only: other currencies are flagged, not converted.
 - Flags are rule-based and simple; they will not catch every fraud and will sometimes flag normal payments.
-- A row with fewer values than the header is currently accepted; this may change.
 
 ## 7. Feedback and problems
 

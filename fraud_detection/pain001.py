@@ -27,8 +27,13 @@ class Pain001Importer:
 
     def parse(self, source: TextIO) -> ParseResult:
         result = ParseResult()
+        text = source.read()
+        # A pain.001 never needs a DTD; refusing any DOCTYPE closes the whole entity/XXE class.
+        if "<!DOCTYPE" in text:
+            result.errors.append(RowError(0, "file contains a DOCTYPE declaration, which pain.001 files never need"))
+            return result
         try:
-            root = ET.parse(source).getroot()
+            root = ET.fromstring(text)
         except ET.ParseError as exc:
             result.errors.append(RowError(0, f"not valid XML: {exc}"))
             return result

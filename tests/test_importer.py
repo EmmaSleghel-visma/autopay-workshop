@@ -76,3 +76,15 @@ def test_row_with_more_fields_than_header_is_rejected():
     assert result.transactions == []
     assert result.errors[0].line == 2
     assert "more fields" in result.errors[0].message
+
+
+def test_row_with_fewer_fields_than_header_is_rejected():
+    result = parse(HEADER + "t1,1,2,5.00,NOK,2026-11-30\n")  # created_date column left off
+    assert result.transactions == []
+    assert result.errors[0].line == 2
+    assert "fewer fields" in result.errors[0].message
+
+
+def test_row_with_empty_optional_value_is_still_accepted():
+    result = parse(HEADER + "t1,1,2,5.00,NOK,2026-11-30,\n")  # trailing comma = present but empty
+    assert result.errors == []
