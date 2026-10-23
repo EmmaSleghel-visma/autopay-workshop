@@ -102,3 +102,10 @@ def test_oversized_field_rejects_only_that_row():
     assert [t.transaction_id for t in result.transactions] == ["t1", "t3"]
     assert [e.line for e in result.errors] == [3]
     assert "could not be read" in result.errors[0].message
+
+
+def test_oversized_header_line_rejects_the_file_without_crash():
+    result = parse("x" * 200_000 + "\nt1,1,2,5.00,NOK,2026-11-30,\n")
+    assert result.transactions == []
+    assert result.errors[0].line == 1
+    assert "header line could not be read" in result.errors[0].message

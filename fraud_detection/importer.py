@@ -28,8 +28,13 @@ class CsvImporter:
     def parse(self, source: TextIO) -> ParseResult:
         result = ParseResult()
         reader = csv.DictReader(source)
+        try:
+            fieldnames = reader.fieldnames  # reads the header line
+        except csv.Error as exc:
+            result.errors.append(RowError(1, f"header line could not be read: {exc}"))
+            return result
         # lstrip the UTF-8 BOM that Excel puts in front of the first column name
-        header = [h.lstrip("﻿").strip() for h in (reader.fieldnames or [])]
+        header = [h.lstrip("﻿").strip() for h in (fieldnames or [])]
         missing = [c for c in REQUIRED_COLUMNS if c not in header]
         if missing:
             result.errors.append(RowError(1, f"missing column(s): {', '.join(missing)}"))
