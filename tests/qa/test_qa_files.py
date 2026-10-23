@@ -4,8 +4,11 @@ import time
 
 import pytest
 
+from fraud_detection import rules
+from fraud_detection.importer import CsvImporter
+from fraud_detection.service import import_transactions
 from fraud_detection.storage import TransactionStore
-from qa_support import import_file
+from qa_support import IMPORT_DATE, import_file
 
 
 def file_mismatches(expected, category, tmp_path):
@@ -40,6 +43,19 @@ def test_rejected_file_reports_why(store):
     s = import_file(store, "file_bad_header.csv")
     assert [e.line for e in s.errors] == [1]
     assert "missing column" in s.errors[0].message
+
+
+def test_error_line_numbers_count_blank_lines(tmp_path):
+    path = tmp_path / "blank_line.csv"
+    path.write_text("transaction_id,debtor_account,creditor_account,amount,currency,due_date,created_date\n"
+                    "B1,1,2,10.00,NOK,2026-11-01,2026-10-01\n\nB2,1,2,abc,NOK,2026-11-01,2026-10-01\n", encoding="utf-8")
+    store = TransactionStore(tmp_path / "blank.db")
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            s = import_transactions(f, CsvImporter(), store, rules.evaluate, IMPORT_DATE)
+    finally:
+        store.close()
+    assert [e.line for e in s.errors] == [4], "the bad row is on physical line 4 of the file"
 
 
 @pytest.mark.slow
