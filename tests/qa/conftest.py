@@ -6,6 +6,10 @@ from fraud_detection.storage import TransactionStore
 from qa_support import import_file, load_expected
 
 
+def pytest_configure(config):
+    config.addinivalue_line("markers", "slow: long-running QA checks (deselect with -m 'not slow')")
+
+
 @pytest.fixture(scope="session")
 def expected():
     return load_expected()

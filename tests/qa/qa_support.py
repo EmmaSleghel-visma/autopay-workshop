@@ -5,8 +5,7 @@ from datetime import date
 from pathlib import Path
 
 from fraud_detection import rules
-from fraud_detection.importer import CsvImporter
-from fraud_detection.service import import_transactions
+from fraud_detection.service import import_transactions, importer_for
 
 QA_DIR = Path(__file__).resolve().parents[2] / "qa"
 DATA_DIR = QA_DIR / "data"
@@ -18,8 +17,8 @@ def load_expected():
 
 
 def import_file(store, name):
-    with open(DATA_DIR / name, newline="", encoding="utf-8") as f:
-        return import_transactions(f, CsvImporter(), store, rules.evaluate, IMPORT_DATE)
+    with open(DATA_DIR / name, newline="", encoding="utf-8-sig") as f:
+        return import_transactions(f, importer_for(name), store, rules.evaluate, IMPORT_DATE)
 
 
 def flag_mismatches(expected, category, actual_flags):
