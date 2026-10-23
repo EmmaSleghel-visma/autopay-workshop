@@ -37,6 +37,16 @@ py -3 -m venv .venv
 
 Then open http://127.0.0.1:5000. Data is stored in `fraud_detection.db` (override with the `FRAUD_DB` environment variable).
 
+### Try it from the command line
+
+```
+.venv\Scripts\python -m fraud_detection import samples\transactions.csv
+.venv\Scripts\python -m fraud_detection list
+```
+
+`samples/README.md` lists what each sample row exercises and the expected result.
+Until `rules.py` is implemented, transactions are imported without flags.
+
 ### Tests
 
 ```
