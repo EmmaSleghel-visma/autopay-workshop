@@ -62,7 +62,7 @@ def rules_on_page(page, transaction_id):
     row = page.locator("tbody tr").filter(has=page.get_by_role("cell", name=transaction_id, exact=True))
     if row.count() != 1:
         return None
-    return sorted(row.locator("span.rule").all_inner_texts())
+    return sorted(row.locator(".rule .code").all_inner_texts())
 
 
 def test_user_uploads_a_csv_and_reads_the_summary(page, expected):
@@ -83,7 +83,10 @@ def test_user_finds_a_flagged_row_in_the_transactions_table(page, expected):
     assert row.count() == 1
     assert "flagged" in (row.get_attribute("class") or "")
     assert row.get_by_role("cell", name="Flagged", exact=True).is_visible()
-    assert sorted(row.locator("span.rule").all_inner_texts()) == flagged["flags"]
+    assert sorted(row.locator(".rule .code").all_inner_texts()) == flagged["flags"]
+    for rule in row.locator(".rule").all():
+        code = rule.locator(".code").inner_text()
+        assert rule.is_visible() and rule.inner_text().replace(code, "").strip(), f"{code}: no reason shown"
 
 
 def test_user_uploads_a_bad_file_and_reads_the_error(page):

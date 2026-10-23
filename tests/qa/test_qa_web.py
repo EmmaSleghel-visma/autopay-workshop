@@ -33,6 +33,9 @@ class Page(HTMLParser):
         self._section = ""
         self._h2 = None
         self._in_span = False
+        self._in_rule = False
+        self._a_href = self._a_text = None
+        self.next_href = None
         self.feed(html)
 
     def handle_starttag(self, tag, attrs):
@@ -42,7 +45,12 @@ class Page(HTMLParser):
         elif tag == "tr":
             self._row = []
         elif tag in ("td", "th"):
-            self._cell = {"text": "", "spans": []}
+            self._cell = {"text": "", "spans": [], "reasons": []}
+        elif tag == "div" and self._cell is not None and "rule" in (attrs.get("class") or "").split():
+            self._in_rule = True
+            self._cell["reasons"].append("")
+        elif tag == "a":
+            self._a_href, self._a_text = attrs.get("href"), ""
         elif tag == "span" and self._cell is not None:
             self._in_span = True
             self._cell["spans"].append("")
@@ -63,6 +71,13 @@ class Page(HTMLParser):
             self._row = None
         elif tag == "span":
             self._in_span = False
+        elif tag == "div" and self._in_rule:
+            self._in_rule = False
+            self._cell["reasons"][-1] = self._cell["reasons"][-1].strip()
+        elif tag == "a" and self._a_text is not None:
+            if self._a_text.strip().startswith("Next"):
+                self.next_href = self._a_href
+            self._a_href = self._a_text = None
         elif tag == "li" and self._li is not None:
             self.items.append((self._section, self._li.strip()))
             self._li = None
@@ -77,6 +92,10 @@ class Page(HTMLParser):
             self._cell["text"] += data
             if self._in_span:
                 self._cell["spans"][-1] += data
+            elif self._in_rule:
+                self._cell["reasons"][-1] += data
+        if self._a_text is not None:
+            self._a_text += data
         if self._li is not None:
             self._li += data
         if self._h2 is not None:
@@ -100,9 +119,9 @@ class Page(HTMLParser):
             return {}
         header, *rows = self.tables[0]
         names = [c["text"] for c in header]
-        id_col, rules_col = names.index("Transaction ID"), names.index("Rules triggered")
+        id_col, rules_col = names.index("Transaction ID"), names.index("Why flagged")
         return {r[id_col]["text"]: {"row": [c["text"] for c in r], "flags": [s.strip() for s in r[rules_col]["spans"]],
-                                    "names": names} for r in rows}
+                                    "reasons": r[rules_col]["reasons"], "names": names} for r in rows}
 
     def transaction_ids(self):
         if not self.tables:
@@ -110,6 +129,40 @@ class Page(HTMLParser):
         names = [c["text"] for c in self.tables[0][0]]
         id_col = names.index("Transaction ID")
         return [r[id_col]["text"] for r in self.tables[0][1:]]
+
+
+class AllPages:
+    """Every page of /transactions, reached by following the Next links."""
+
+    def __init__(self, client, max_pages=1000):
+        self.pages, url = [], "/transactions"
+        while url and len(self.pages) < max_pages:
+            self.pages.append(Page(client.get(url).get_data(as_text=True)))
+            url = self.pages[-1].next_href
+
+    def transactions(self):
+        merged = {}
+        for page in self.pages:
+            merged.update(page.transactions())
+        return merged
+
+    def transaction_ids(self):
+        return [i for page in self.pages for i in page.transaction_ids()]
+
+
+LIMITS_SHOWN = {"NOK": "10 000", "SEK": "10 000", "EUR": "1 000"}
+
+
+def expected_reason(code, row):
+    start = "the created date" if row["row"][row["names"].index("Created date")] else "the import date"
+    currency = row["row"][row["names"].index("Currency")]
+    return {
+        "HIGH_AMOUNT": f"Amount above {currency} {LIMITS_SHOWN.get(currency)}",
+        "NEW_CREDITOR": "First payment from this debtor to this creditor",
+        "FAR_FUTURE_DUE": f"Due date more than 3 months after {start}",
+        "PAST_DUE_DATE": f"Due date before {start}",
+        "UNSUPPORTED_CURRENCY": f"Currency {currency} is not supported (only NOK, SEK and EUR)",
+    }.get(code)
 
 
 @pytest.fixture
@@ -152,7 +205,7 @@ def uploaded_all(client, expected):
     for name in expected["import_order"]:
         response = upload_via_form(client, DATA_DIR / name)
         pages[name] = (response.status_code, Page(response.get_data(as_text=True)))
-    return pages, Page(client.get("/transactions").get_data(as_text=True))
+    return pages, AllPages(client)
 
 
 def category_mismatches(expected, uploaded_all, category):
@@ -243,6 +296,16 @@ def test_flagged_rows_are_marked_flagged(uploaded_all):
         status = r["row"][r["names"].index("Status")]
         if status != ("Flagged" if r["flags"] else "OK"):
             failures.append(f"{tx_id}: status '{status}' with flags {r['flags']}")
+    assert not failures, "\n".join(failures)
+
+
+def test_every_flag_has_its_plain_language_reason(uploaded_all):
+    _, table = uploaded_all
+    failures = []
+    for tx_id, r in table.transactions().items():
+        want = [expected_reason(code, r) for code in r["flags"]]
+        if r["reasons"] != want:
+            failures.append(f"{tx_id}: flags {r['flags']}, expected reasons {want}, page shows {r['reasons']}")
     assert not failures, "\n".join(failures)
 
 
@@ -352,7 +415,7 @@ def test_same_file_twice_second_summary_is_all_duplicates(client, expected):
     first = expected["summaries"]["all_rules.csv"]
     want = {"imported": 0, "flagged": 0, "duplicates": first["imported"] + first["duplicates"], "errors": first["errors"]}
     failures = summary_mismatch("second upload", second, want)
-    ids = Page(client.get("/transactions").get_data(as_text=True)).transaction_ids()
+    ids = AllPages(client).transaction_ids()
     if len(ids) != len(set(ids)) or len(ids) != first["imported"]:
         failures.append(f"transactions page: {len(ids)} rows, {len(set(ids))} unique, expected {first['imported']}")
     assert not failures, "\n".join(failures)
@@ -367,7 +430,7 @@ def test_refresh_resubmit_does_not_store_twice(client):
         print("FINDING: POST /upload renders the summary directly (no POST-redirect-GET); a browser refresh re-POSTs the file")
     if Page(resubmit.get_data(as_text=True)).counts() != {"imported": 0, "flagged": 0, "duplicates": 1, "errors": 0}:
         failures.append(f"re-POST summary: {Page(resubmit.get_data(as_text=True)).counts()}")
-    ids = Page(client.get("/transactions").get_data(as_text=True)).transaction_ids()
+    ids = AllPages(client).transaction_ids()
     if ids != ["R-1"]:
         failures.append(f"transactions after re-POST: {ids}")
     assert not failures, "\n".join(failures)
@@ -391,19 +454,22 @@ def test_transactions_page_with_10k_rows(client):
     start = time.perf_counter()
     summary = Page(upload_file(client, DATA_DIR / "file_large_10k.csv").get_data(as_text=True)).counts()
     upload_seconds = time.perf_counter() - start
-    start = time.perf_counter()
-    response = client.get("/transactions")
-    render_seconds = time.perf_counter() - start
-    html = response.get_data(as_text=True)
-    rows = len(Page(html).transaction_ids())
-    paginated = bool(re.search(r"page=|[Nn]ext|[Pp]revious|[Pp]age \d", html))
-    print(f"10k: upload {upload_seconds:.2f}s, /transactions {render_seconds:.2f}s, {len(html) / 1e6:.1f} MB HTML, "
-          f"{rows} rows on one page, pagination={'yes' if paginated else 'no'}")
-    failures = []
+    ids, slowest, url, failures = [], 0.0, "/transactions", []
+    while url:
+        start = time.perf_counter()
+        response = client.get(url)
+        slowest = max(slowest, time.perf_counter() - start)
+        if response.status_code != 200:
+            failures.append(f"{url}: HTTP {response.status_code}")
+            break
+        page = Page(response.get_data(as_text=True))
+        ids += page.transaction_ids()
+        url = page.next_href
+    print(f"10k: upload {upload_seconds:.2f}s, {len(ids)} rows walked, slowest page {slowest:.2f}s")
     if summary.get("imported") != 10000:
         failures.append(f"10k upload summary: {summary}")
-    if response.status_code != 200 or rows != 10000 and not paginated:
-        failures.append(f"/transactions: HTTP {response.status_code}, {rows} rows, pagination={paginated}")
-    if render_seconds > 5:
-        failures.append(f"/transactions took {render_seconds:.2f}s to render 10k rows (budget 5 s)")
+    if len(ids) != 10000 or len(set(ids)) != 10000:
+        failures.append(f"walking all pages: {len(ids)} rows, {len(set(ids))} unique, expected 10000")
+    if slowest > 5:
+        failures.append(f"slowest /transactions page took {slowest:.2f}s (budget 5 s)")
     assert not failures, "\n".join(failures)
