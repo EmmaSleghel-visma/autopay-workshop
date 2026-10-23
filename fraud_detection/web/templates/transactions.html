@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}All transactions{% endblock %}
+{% block content %}
+<h1>All transactions</h1>
+{% if transactions %}
+<table>
+  <thead>
+    <tr>
+      <th>Transaction ID</th><th>Debtor account</th><th>Creditor account</th><th>Amount</th>
+      <th>Currency</th><th>Due date</th><th>Created date</th><th>Imported</th><th>Status</th><th>Rules triggered</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in transactions %}
+    {% set t = s.transaction %}
+    <tr{% if s.flags %} class="flagged"{% endif %}>
+      <td>{{ t.transaction_id }}</td>
+      <td>{{ t.debtor_account }}</td>
+      <td>{{ t.creditor_account }}</td>
+      <td class="num">{{ t.amount }}</td>
+      <td>{{ t.currency }}</td>
+      <td>{{ t.due_date }}</td>
+      <td>{{ t.created_date or "" }}</td>
+      <td>{{ s.import_date }}</td>
+      <td>{% if s.flags %}Flagged{% else %}OK{% endif %}</td>
+      <td>{% for code in s.flags %}<span class="rule">{{ code }}</span>{% endfor %}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No transactions yet. <a href="{{ url_for('upload_form') }}">Upload a file</a>.</p>
+{% endif %}
+{% endblock %}

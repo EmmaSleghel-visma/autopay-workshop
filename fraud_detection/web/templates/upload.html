@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Upload transactions{% endblock %}
+{% block content %}
+<div class="card">
+  <h1>Upload transactions</h1>
+  <p>Choose a CSV file or an ISO 20022 pain.001 XML file (.xml).</p>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".csv,.xml,text/csv,text/xml,application/xml">
+    <button type="submit">Import</button>
+  </form>
+</div>
+{% endblock %}
