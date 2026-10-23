@@ -12,7 +12,7 @@ from datetime import date
 
 from . import rules
 from .service import import_transactions, importer_for
-from .storage import TransactionStore
+from .storage import StorageError, TransactionStore
 from .web import DEFAULT_DB
 
 
@@ -63,7 +63,11 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("list", help="list stored transactions")
     args = parser.parse_args(argv)
 
-    store = TransactionStore(args.db)
+    try:
+        store = TransactionStore(args.db)
+    except StorageError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 2
     try:
         return cmd_import(store, args.csv) if args.command == "import" else cmd_list(store)
     finally:

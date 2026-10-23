@@ -22,3 +22,10 @@ def test_list_shows_imported_transactions(tmp_path, capsys):
     assert main(["--db", db, "list"]) == 0
     out = capsys.readouterr().out
     assert "T010" in out and "25000.00" in out
+
+
+def test_corrupt_database_exits_2_with_a_message(tmp_path, capsys):
+    db = tmp_path / "fraud.db"
+    db.write_bytes(b"garbage" * 500)
+    assert main(["--db", str(db), "list"]) == 2
+    assert "not a valid database file" in capsys.readouterr().err
