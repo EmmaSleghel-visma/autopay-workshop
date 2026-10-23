@@ -1,0 +1,4 @@
+-r requirements-dev.txt
+hypothesis==6.135.0
+pytest-cov==6.2.1
+playwright==1.55.0

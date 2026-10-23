@@ -1,0 +1,1043 @@
+{
+  "import_order": [
+    "all_rules.csv",
+    "import2_followup.csv",
+    "errors.csv"
+  ],
+  "summaries": {
+    "all_rules.csv": {
+      "imported": 71,
+      "flagged": 35,
+      "duplicates": 1,
+      "errors": 0
+    },
+    "import2_followup.csv": {
+      "imported": 3,
+      "flagged": 1,
+      "duplicates": 1,
+      "errors": 0
+    },
+    "errors.csv": {
+      "imported": 1,
+      "flagged": 0,
+      "duplicates": 0,
+      "errors": 16
+    }
+  },
+  "transactions": [
+    {
+      "file": "all_rules.csv",
+      "case": "POS-01",
+      "category": "POS",
+      "transaction_id": "T-POS-01",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "typical small payment, debtor's first: clean"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "POS-02",
+      "category": "POS",
+      "transaction_id": "T-POS-02",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "known creditor, normal amount and due date: clean"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "POS-03",
+      "category": "POS",
+      "transaction_id": "T-POS-03",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "clearly large amount"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "POS-04",
+      "category": "POS",
+      "transaction_id": "T-POS-04",
+      "status": "IMPORTED",
+      "flags": [
+        "NEW_CREDITOR"
+      ],
+      "note": "known debtor pays a new creditor"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "POS-05",
+      "category": "POS",
+      "transaction_id": "T-POS-05",
+      "status": "IMPORTED",
+      "flags": [
+        "FAR_FUTURE_DUE"
+      ],
+      "note": "due 6 months out"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R1-01",
+      "category": "CORNER",
+      "transaction_id": "T-R1-01",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "exactly 10,000.00 is not flagged"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R1-02",
+      "category": "CORNER",
+      "transaction_id": "T-R1-02",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "one ore over the limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R1-03",
+      "category": "CORNER",
+      "transaction_id": "T-R1-03",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "one ore under"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R1-04",
+      "category": "POS",
+      "transaction_id": "T-R1-04",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "large amount without decimals"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R1-05",
+      "category": "CORNER",
+      "transaction_id": "T-R1-05",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "smallest amount"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R1-06",
+      "category": "CORNER",
+      "transaction_id": "T-R1-06",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "one decimal, equal to limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R1-07",
+      "category": "CORNER",
+      "transaction_id": "T-R1-07",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "leading zero, equal to limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R1-08",
+      "category": "CORNER",
+      "transaction_id": "T-R1-08",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "very large amount, no overflow"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R1-09",
+      "category": "NEG",
+      "transaction_id": "T-R1-09",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "ordinary amount must not trip R1"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-01",
+      "category": "CORNER",
+      "transaction_id": "T-R3-01",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "exactly 3 months is not flagged"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-02",
+      "category": "CORNER",
+      "transaction_id": "T-R3-02",
+      "status": "IMPORTED",
+      "flags": [
+        "FAR_FUTURE_DUE"
+      ],
+      "note": "3 months + 1 day"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-03",
+      "category": "CORNER",
+      "transaction_id": "T-R3-03",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "month end: Jan 31 + 3m = Apr 30 (PO: last day of month)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-04",
+      "category": "CORNER",
+      "transaction_id": "T-R3-04",
+      "status": "IMPORTED",
+      "flags": [
+        "FAR_FUTURE_DUE"
+      ],
+      "note": "month end + 1 day"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-05",
+      "category": "CORNER",
+      "transaction_id": "T-R3-05",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "Nov 30 + 3m = Feb 28 (non-leap)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-06",
+      "category": "CORNER",
+      "transaction_id": "T-R3-06",
+      "status": "IMPORTED",
+      "flags": [
+        "FAR_FUTURE_DUE"
+      ],
+      "note": "Feb 28 + 1 day"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-07",
+      "category": "CORNER",
+      "transaction_id": "T-R3-07",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "leap year: Nov 29 + 3m = Feb 29"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-08",
+      "category": "NEG",
+      "transaction_id": "T-R3-08",
+      "status": "IMPORTED",
+      "flags": [
+        "PAST_DUE_DATE"
+      ],
+      "note": "due date before created date: PAST_DUE_DATE, row kept (PO)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-16",
+      "category": "CORNER",
+      "transaction_id": "T-R3-16",
+      "status": "IMPORTED",
+      "flags": [
+        "PAST_DUE_DATE"
+      ],
+      "note": "no created_date, due the day before import date: PAST_DUE_DATE"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-17",
+      "category": "CORNER",
+      "transaction_id": "T-R3-17",
+      "status": "IMPORTED",
+      "flags": [
+        "PAST_DUE_DATE"
+      ],
+      "note": "due one day before created date: PAST_DUE_DATE"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-09",
+      "category": "POS",
+      "transaction_id": "T-R3-09",
+      "status": "IMPORTED",
+      "flags": [
+        "FAR_FUTURE_DUE"
+      ],
+      "note": "no created_date: compared to import date"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-10",
+      "category": "CORNER",
+      "transaction_id": "T-R3-10",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "no created_date, due on import date"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-11",
+      "category": "CORNER",
+      "transaction_id": "T-R3-11",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "due date equals created date"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-12",
+      "category": "CORNER",
+      "transaction_id": "T-R3-12",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "crosses year end: Nov 30 + 3m = Feb 28"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-13",
+      "category": "CORNER",
+      "transaction_id": "T-R3-13",
+      "status": "IMPORTED",
+      "flags": [
+        "FAR_FUTURE_DUE"
+      ],
+      "note": "crosses year end + 1 day"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-14",
+      "category": "CORNER",
+      "transaction_id": "T-R3-14",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "from leap day: Feb 29 + 3m = May 29"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R3-15",
+      "category": "NEG",
+      "transaction_id": "T-R3-15",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "2 months out must not trip R3"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R2-01",
+      "category": "NEG",
+      "transaction_id": "T-R2-01",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "debtor's first txn is never flagged"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R2-02",
+      "category": "NEG",
+      "transaction_id": "T-R2-02",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "same creditor again"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R2-03",
+      "category": "POS",
+      "transaction_id": "T-R2-03",
+      "status": "IMPORTED",
+      "flags": [
+        "NEW_CREDITOR"
+      ],
+      "note": "A then B: B is new"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R2-04",
+      "category": "CORNER",
+      "transaction_id": "T-R2-04",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "B now known (confirm)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R2-05",
+      "category": "CORNER",
+      "transaction_id": "T-R2-05",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "C_A with spaces instead of dots = same account"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R2-06",
+      "category": "CORNER",
+      "transaction_id": "T-R2-06",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "C_A without separators = same account"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R2-07",
+      "category": "CORNER",
+      "transaction_id": "T-R2-07",
+      "status": "IMPORTED",
+      "flags": [
+        "NEW_CREDITOR"
+      ],
+      "note": "debtor written with spaces is still known; C_C is new"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R2-08",
+      "category": "CORNER",
+      "transaction_id": "T-R2-08",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "leading/trailing whitespace around a known account (confirm)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "R2-09",
+      "category": "CORNER",
+      "transaction_id": "T-R2-09",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "roles swapped: C_A as debtor is a new debtor, first txn"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "FMT-01",
+      "category": "NEG",
+      "transaction_id": "T-FMT-01",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "debtor first txn"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "FMT-02",
+      "category": "NEG",
+      "transaction_id": "T-FMT-02",
+      "status": "IMPORTED",
+      "flags": [
+        "NEW_CREDITOR"
+      ],
+      "note": "differs in last digit: different creditor"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "MIX-01",
+      "category": "POS",
+      "transaction_id": "T-MIX-01",
+      "status": "IMPORTED",
+      "flags": [
+        "FAR_FUTURE_DUE",
+        "HIGH_AMOUNT",
+        "NEW_CREDITOR"
+      ],
+      "note": "all three rules on one txn"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "MIX-02",
+      "category": "POS",
+      "transaction_id": "T-MIX-02",
+      "status": "IMPORTED",
+      "flags": [
+        "FAR_FUTURE_DUE",
+        "HIGH_AMOUNT"
+      ],
+      "note": "two rules on one txn"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-01",
+      "category": "NEG",
+      "transaction_id": "T-CUR-01",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "EUR is supported, 100 under the EUR limit: no flags"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-02",
+      "category": "POS",
+      "transaction_id": "T-CUR-02",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "SEK over the SEK limit: HIGH_AMOUNT only"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-05",
+      "category": "POS",
+      "transaction_id": "T-CUR-05",
+      "status": "IMPORTED",
+      "flags": [
+        "FAR_FUTURE_DUE",
+        "NEW_CREDITOR"
+      ],
+      "note": "EUR 100 + new creditor + far due: no HIGH_AMOUNT, no currency flag"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-03",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-03",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "lowercase nok accepted as NOK (confirm)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-04",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-04",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "padded NOK accepted (confirm)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-06",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-06",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "SEK exactly at the limit is not flagged"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-07",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-07",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "SEK one ore over the limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-08",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-08",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "SEK one ore under the limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-09",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-09",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "EUR exactly at the EUR limit is not flagged"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-10",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-10",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "EUR one cent over the EUR limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-11",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-11",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "EUR one cent under the EUR limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-12",
+      "category": "POS",
+      "transaction_id": "T-CUR-12",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "EUR 1500 is high, the same amount in NOK is not (no conversion)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-13",
+      "category": "NEG",
+      "transaction_id": "T-CUR-13",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "NOK 1500 control for CUR-12: no flags"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-14",
+      "category": "POS",
+      "transaction_id": "T-CUR-14",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "EUR 5000: high in EUR, under the NOK/SEK limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-15",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-15",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "lowercase sek upper-cased on import: SEK limit applies"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-16",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-16",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "padded lowercase eur trimmed and upper-cased: EUR limit applies"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-17",
+      "category": "NEG",
+      "transaction_id": "T-CUR-17",
+      "status": "IMPORTED",
+      "flags": [
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "USD over every limit: UNSUPPORTED_CURRENCY only, no HIGH_AMOUNT"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-18",
+      "category": "NEG",
+      "transaction_id": "T-CUR-18",
+      "status": "IMPORTED",
+      "flags": [
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "GBP: unsupported"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-19",
+      "category": "NEG",
+      "transaction_id": "T-CUR-19",
+      "status": "IMPORTED",
+      "flags": [
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "DKK (Nordic neighbour) over 10000: still unsupported, no HIGH_AMOUNT"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-20",
+      "category": "NEG",
+      "transaction_id": "T-CUR-20",
+      "status": "IMPORTED",
+      "flags": [
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "EURO is not the code EUR: importer keeps it, UNSUPPORTED_CURRENCY, no HIGH_AMOUNT"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-21",
+      "category": "NEG",
+      "transaction_id": "T-CUR-21",
+      "status": "IMPORTED",
+      "flags": [
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "euro sign is not a code: importer keeps it, UNSUPPORTED_CURRENCY, no HIGH_AMOUNT"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-22",
+      "category": "NEG",
+      "transaction_id": "T-CUR-22",
+      "status": "IMPORTED",
+      "flags": [
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "NOKK typo: unsupported, not matched to NOK"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-23",
+      "category": "NEG",
+      "transaction_id": "T-CUR-23",
+      "status": "IMPORTED",
+      "flags": [
+        "FAR_FUTURE_DUE",
+        "NEW_CREDITOR",
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "USD + new creditor + far due: other rules still apply, no HIGH_AMOUNT"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-24",
+      "category": "NEG",
+      "transaction_id": "T-CUR-24",
+      "status": "IMPORTED",
+      "flags": [
+        "PAST_DUE_DATE",
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "USD due before created date: PAST_DUE_DATE still applies"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "XIMP-01",
+      "category": "POS",
+      "transaction_id": "T-X-01",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "debtor first seen in import 1"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "XSS-01",
+      "category": "NEG",
+      "transaction_id": "T-XSS-01",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "HTML in account field: shown escaped on the web page (confirm: or rejected)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "DUP-01",
+      "category": "POS",
+      "transaction_id": "T-DUP-01",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "first occurrence kept"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "DUP-02",
+      "category": "NEG",
+      "transaction_id": "T-DUP-01",
+      "status": "DUPLICATE",
+      "flags": [],
+      "note": "same id in same file: skipped, not flagged R1"
+    },
+    {
+      "file": "import2_followup.csv",
+      "case": "XIMP-02",
+      "category": "POS",
+      "transaction_id": "T-X-02",
+      "status": "IMPORTED",
+      "flags": [
+        "NEW_CREDITOR"
+      ],
+      "note": "new creditor for a debtor known from an earlier import"
+    },
+    {
+      "file": "import2_followup.csv",
+      "case": "XIMP-03",
+      "category": "POS",
+      "transaction_id": "T-X-03",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "creditor known from earlier import"
+    },
+    {
+      "file": "import2_followup.csv",
+      "case": "DUP-03",
+      "category": "NEG",
+      "transaction_id": "T-R1-02",
+      "status": "DUPLICATE",
+      "flags": [],
+      "note": "id already imported earlier: skipped"
+    },
+    {
+      "file": "import2_followup.csv",
+      "case": "DUP-04",
+      "category": "CORNER",
+      "transaction_id": "t-r1-03",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "same id in other case: treated as a new id (confirm)"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-01",
+      "category": "NEG",
+      "transaction_id": "T-ERR-01",
+      "status": "ERROR",
+      "flags": [],
+      "note": "non-numeric amount"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-02",
+      "category": "NEG",
+      "transaction_id": "T-ERR-02",
+      "status": "ERROR",
+      "flags": [],
+      "note": "missing amount"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-03",
+      "category": "NEG",
+      "transaction_id": "T-ERR-03",
+      "status": "ERROR",
+      "flags": [],
+      "note": "wrong date format"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-04",
+      "category": "NEG",
+      "transaction_id": "T-ERR-04",
+      "status": "ERROR",
+      "flags": [],
+      "note": "impossible date"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-05",
+      "category": "NEG",
+      "transaction_id": "T-ERR-05",
+      "status": "ERROR",
+      "flags": [],
+      "note": "missing debtor"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-06",
+      "category": "NEG",
+      "transaction_id": "",
+      "status": "ERROR",
+      "flags": [],
+      "note": "missing transaction id"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-07",
+      "category": "NEG",
+      "transaction_id": "T-ERR-07",
+      "status": "ERROR",
+      "flags": [],
+      "note": "negative amount: rejected (PO)"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-08",
+      "category": "NEG",
+      "transaction_id": "T-ERR-08",
+      "status": "ERROR",
+      "flags": [],
+      "note": "missing currency"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-09",
+      "category": "NEG",
+      "transaction_id": "T-ERR-09",
+      "status": "ERROR",
+      "flags": [],
+      "note": "missing creditor"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-10",
+      "category": "NEG",
+      "transaction_id": "T-ERR-10",
+      "status": "ERROR",
+      "flags": [],
+      "note": "missing due date"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-11",
+      "category": "NEG",
+      "transaction_id": "T-ERR-11",
+      "status": "ERROR",
+      "flags": [],
+      "note": "comma decimal separator (confirm: error or 10000.50?)"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-12",
+      "category": "CORNER",
+      "transaction_id": "T-ERR-12",
+      "status": "ERROR",
+      "flags": [],
+      "note": "zero amount: rejected (PO)"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-13",
+      "category": "NEG",
+      "transaction_id": "T-ERR-13",
+      "status": "ERROR",
+      "flags": [],
+      "note": "row with fewer values than the header: rejected (PO 10:08)"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-14",
+      "category": "NEG",
+      "transaction_id": "T-ERR-14",
+      "status": "ERROR",
+      "flags": [],
+      "note": "row with more values than the header: rejected (PO 10:08)"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-15",
+      "category": "NEG",
+      "transaction_id": "T-ERR-15",
+      "status": "ERROR",
+      "flags": [],
+      "note": "whitespace-only amount"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-16",
+      "category": "NEG",
+      "transaction_id": "T-ERR-16",
+      "status": "ERROR",
+      "flags": [],
+      "note": "whitespace-only currency: trimmed to empty, rejected like a missing one"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-OK",
+      "category": "POS",
+      "transaction_id": "T-OK-01",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "valid row among bad ones is still imported"
+    }
+  ],
+  "files": [
+    {
+      "file": "file_empty.csv",
+      "case": "FILE-01",
+      "category": "CORNER",
+      "expect": "header only: summary 0/0/0/0, no crash",
+      "imported": 0,
+      "errors": 0
+    },
+    {
+      "file": "file_zero_bytes.csv",
+      "case": "FILE-02",
+      "category": "NEG",
+      "expect": "0-byte file: clear error, no crash",
+      "imported": 0,
+      "errors": 1
+    },
+    {
+      "file": "file_bad_header.csv",
+      "case": "FILE-03",
+      "category": "NEG",
+      "expect": "unknown header: whole file rejected with a clear message",
+      "imported": 0,
+      "errors": 1
+    },
+    {
+      "file": "file_no_header.csv",
+      "case": "FILE-04",
+      "category": "NEG",
+      "expect": "missing header row: rejected (or first row not silently lost)",
+      "imported": 0,
+      "errors": 1
+    },
+    {
+      "file": "file_semicolon.csv",
+      "case": "FILE-05",
+      "category": "NEG",
+      "expect": "semicolon delimiter (Excel NO locale): clear error or supported (confirm)",
+      "imported": 0,
+      "errors": 1
+    },
+    {
+      "file": "file_not_csv.txt",
+      "case": "FILE-06",
+      "category": "NEG",
+      "expect": "binary / non-CSV upload: rejected, no crash",
+      "imported": 0,
+      "errors": 1
+    },
+    {
+      "file": "file_bom.csv",
+      "case": "FILE-07",
+      "category": "CORNER",
+      "expect": "UTF-8 BOM (Excel export): first column still recognised, 1 imported",
+      "imported": 1,
+      "errors": 0
+    },
+    {
+      "file": "file_lf_endings.csv",
+      "case": "FILE-08",
+      "category": "CORNER",
+      "expect": "Unix line endings: 1 imported",
+      "imported": 1,
+      "errors": 0
+    },
+    {
+      "file": "file_reordered_columns.csv",
+      "case": "FILE-09",
+      "category": "CORNER",
+      "expect": "columns in another order: read by name, 1 imported (confirm)",
+      "imported": 1,
+      "errors": 0
+    },
+    {
+      "file": "file_trailing_blank_lines.csv",
+      "case": "FILE-10",
+      "category": "CORNER",
+      "expect": "blank lines at the end: not counted as errors",
+      "imported": 1,
+      "errors": 0
+    },
+    {
+      "file": "file_quoted_fields.csv",
+      "case": "FILE-11",
+      "category": "CORNER",
+      "expect": "all fields quoted: 1 imported",
+      "imported": 1,
+      "errors": 0
+    },
+    {
+      "file": "file_large_10k.csv",
+      "case": "FILE-12",
+      "category": "CORNER",
+      "expect": "10,000 rows import in reasonable time (< 30 s), page stays usable",
+      "imported": 10000,
+      "errors": 0
+    }
+  ]
+}

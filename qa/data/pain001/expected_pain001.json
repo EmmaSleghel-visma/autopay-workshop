@@ -1,0 +1,1934 @@
+{
+  "import_date": "2026-10-23",
+  "steps": [
+    {
+      "file": "p01_v03_basic.xml",
+      "case": "FILE-P01",
+      "category": "POS",
+      "note": "normal .03 file, two PmtInf blocks for one debtor",
+      "summary": {
+        "imported": 5,
+        "flagged": 3,
+        "duplicates": 0,
+        "errors": 0
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "V03-01",
+          "category": "POS",
+          "transaction_id": "V03-E2E-01",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "debtor's first txn: clean",
+          "fields": {
+            "debtor_account": "86011117941",
+            "creditor_account": "90001100001",
+            "amount": "1500.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p01_v03_basic.xml"
+        },
+        {
+          "case": "V03-02",
+          "category": "POS",
+          "transaction_id": "V03-E2E-02",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "known creditor, normal amount: clean",
+          "fields": {
+            "debtor_account": "86011117941",
+            "creditor_account": "90001100001",
+            "amount": "2300.50",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p01_v03_basic.xml"
+        },
+        {
+          "case": "V03-03",
+          "category": "POS",
+          "transaction_id": "V03-E2E-03",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "large amount",
+          "fields": {
+            "debtor_account": "86011117941",
+            "creditor_account": "90001100001",
+            "amount": "75000.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p01_v03_basic.xml"
+        },
+        {
+          "case": "V03-04",
+          "category": "POS",
+          "transaction_id": "V03-E2E-04",
+          "status": "IMPORTED",
+          "flags": [
+            "NEW_CREDITOR"
+          ],
+          "note": "known debtor pays a new creditor",
+          "fields": {
+            "debtor_account": "86011117941",
+            "creditor_account": "90001100002",
+            "amount": "800.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p01_v03_basic.xml"
+        },
+        {
+          "case": "V03-05",
+          "category": "POS",
+          "transaction_id": "V03-E2E-05",
+          "status": "IMPORTED",
+          "flags": [
+            "FAR_FUTURE_DUE"
+          ],
+          "note": "second PmtInf has its own due date, 6 months out",
+          "fields": {
+            "debtor_account": "86011117941",
+            "creditor_account": "90001100001",
+            "amount": "800.00",
+            "currency": "NOK",
+            "due_date": "2027-04-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p01_v03_basic.xml"
+        }
+      ]
+    },
+    {
+      "file": "p02_v09_basic.xml",
+      "case": "FILE-P02",
+      "category": "POS",
+      "note": "normal .09 file, BICFI, two PmtInf blocks with different debtors, Dt and DtTm",
+      "summary": {
+        "imported": 5,
+        "flagged": 2,
+        "duplicates": 0,
+        "errors": 0
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "V09-01",
+          "category": "POS",
+          "transaction_id": "V09-E2E-01",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "IBAN debtor, first txn: clean",
+          "fields": {
+            "debtor_account": "NO9386011117942",
+            "creditor_account": "90001100001",
+            "amount": "1200.00",
+            "currency": "NOK",
+            "due_date": "2026-10-20",
+            "created_date": "2026-10-01"
+          },
+          "file": "p02_v09_basic.xml"
+        },
+        {
+          "case": "V09-02",
+          "category": "POS",
+          "transaction_id": "V09-E2E-02",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "same debtor, due date and creditor: clean",
+          "fields": {
+            "debtor_account": "NO9386011117942",
+            "creditor_account": "90001100001",
+            "amount": "1300.00",
+            "currency": "NOK",
+            "due_date": "2026-10-20",
+            "created_date": "2026-10-01"
+          },
+          "file": "p02_v09_basic.xml"
+        },
+        {
+          "case": "V09-03",
+          "category": "POS",
+          "transaction_id": "V09-E2E-03",
+          "status": "IMPORTED",
+          "flags": [
+            "NEW_CREDITOR"
+          ],
+          "note": "several txns per PmtInf share the debtor: B is new",
+          "fields": {
+            "debtor_account": "NO9386011117942",
+            "creditor_account": "90001100002",
+            "amount": "1400.00",
+            "currency": "NOK",
+            "due_date": "2026-10-20",
+            "created_date": "2026-10-01"
+          },
+          "file": "p02_v09_basic.xml"
+        },
+        {
+          "case": "V09-04",
+          "category": "POS",
+          "transaction_id": "V09-E2E-04",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "other debtor in another PmtInf: first txn, clean",
+          "fields": {
+            "debtor_account": "86011117943",
+            "creditor_account": "90001100002",
+            "amount": "500.00",
+            "currency": "NOK",
+            "due_date": "2026-11-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p02_v09_basic.xml"
+        },
+        {
+          "case": "V09-05",
+          "category": "POS",
+          "transaction_id": "V09-E2E-05",
+          "status": "IMPORTED",
+          "flags": [
+            "NEW_CREDITOR"
+          ],
+          "note": "second debtor pays a new creditor",
+          "fields": {
+            "debtor_account": "86011117943",
+            "creditor_account": "90001100003",
+            "amount": "600.00",
+            "currency": "NOK",
+            "due_date": "2026-11-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p02_v09_basic.xml"
+        }
+      ]
+    },
+    {
+      "file": "p03_r1_boundaries.xml",
+      "case": "FILE-P03",
+      "category": "CORNER",
+      "note": "HIGH_AMOUNT boundaries",
+      "summary": {
+        "imported": 7,
+        "flagged": 2,
+        "duplicates": 0,
+        "errors": 0
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "R1-01",
+          "category": "CORNER",
+          "transaction_id": "R1-E2E-01",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "exactly 10,000.00 is not flagged",
+          "fields": {
+            "debtor_account": "86011117944",
+            "creditor_account": "90001100001",
+            "amount": "10000.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p03_r1_boundaries.xml"
+        },
+        {
+          "case": "R1-02",
+          "category": "CORNER",
+          "transaction_id": "R1-E2E-02",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "one ore over the limit",
+          "fields": {
+            "debtor_account": "86011117944",
+            "creditor_account": "90001100001",
+            "amount": "10000.01",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p03_r1_boundaries.xml"
+        },
+        {
+          "case": "R1-03",
+          "category": "CORNER",
+          "transaction_id": "R1-E2E-03",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "one ore under",
+          "fields": {
+            "debtor_account": "86011117944",
+            "creditor_account": "90001100001",
+            "amount": "9999.99",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p03_r1_boundaries.xml"
+        },
+        {
+          "case": "R1-04",
+          "category": "CORNER",
+          "transaction_id": "R1-E2E-04",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "no decimals, equal to limit",
+          "fields": {
+            "debtor_account": "86011117944",
+            "creditor_account": "90001100001",
+            "amount": "10000",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p03_r1_boundaries.xml"
+        },
+        {
+          "case": "R1-05",
+          "category": "CORNER",
+          "transaction_id": "R1-E2E-05",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "three decimals, just over the limit (schema allows 5)",
+          "fields": {
+            "debtor_account": "86011117944",
+            "creditor_account": "90001100001",
+            "amount": "10000.001",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p03_r1_boundaries.xml"
+        },
+        {
+          "case": "R1-06",
+          "category": "CORNER",
+          "transaction_id": "R1-E2E-06",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "smallest amount",
+          "fields": {
+            "debtor_account": "86011117944",
+            "creditor_account": "90001100001",
+            "amount": "0.01",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p03_r1_boundaries.xml"
+        },
+        {
+          "case": "R1-07",
+          "category": "NEG",
+          "transaction_id": "R1-E2E-07",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "ordinary amount must not trip R1",
+          "fields": {
+            "debtor_account": "86011117944",
+            "creditor_account": "90001100001",
+            "amount": "5000.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p03_r1_boundaries.xml"
+        }
+      ]
+    },
+    {
+      "file": "p04_r3_v03.xml",
+      "case": "FILE-P04",
+      "category": "CORNER",
+      "note": "FAR_FUTURE_DUE against CreDtTm, .03",
+      "summary": {
+        "imported": 4,
+        "flagged": 1,
+        "duplicates": 0,
+        "errors": 0
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "R3-01",
+          "category": "CORNER",
+          "transaction_id": "R3-E2E-01",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": ".03: exactly CreDtTm + 3 months is not flagged",
+          "fields": {
+            "debtor_account": "86011117945",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2027-01-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p04_r3_v03.xml"
+        },
+        {
+          "case": "R3-02",
+          "category": "CORNER",
+          "transaction_id": "R3-E2E-02",
+          "status": "IMPORTED",
+          "flags": [
+            "FAR_FUTURE_DUE"
+          ],
+          "note": ".03: 3 months + 1 day",
+          "fields": {
+            "debtor_account": "86011117945",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2027-01-02",
+            "created_date": "2026-10-01"
+          },
+          "file": "p04_r3_v03.xml"
+        },
+        {
+          "case": "R3-03",
+          "category": "CORNER",
+          "transaction_id": "R3-E2E-03",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "due date equals CreDtTm date",
+          "fields": {
+            "debtor_account": "86011117945",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p04_r3_v03.xml"
+        },
+        {
+          "case": "R3-04",
+          "category": "NEG",
+          "transaction_id": "R3-E2E-04",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "2 months out must not trip R3",
+          "fields": {
+            "debtor_account": "86011117945",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-12-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p04_r3_v03.xml"
+        }
+      ]
+    },
+    {
+      "file": "p05_r3_month_end_v09.xml",
+      "case": "FILE-P05",
+      "category": "CORNER",
+      "note": "FAR_FUTURE_DUE month-end clamp, .09 Dt and DtTm",
+      "summary": {
+        "imported": 4,
+        "flagged": 2,
+        "duplicates": 0,
+        "errors": 0
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "R3-05",
+          "category": "CORNER",
+          "transaction_id": "R3-E2E-05",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": ".09 Dt month end: Jan 31 + 3m = Apr 30",
+          "fields": {
+            "debtor_account": "86011117946",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-04-30",
+            "created_date": "2026-01-31"
+          },
+          "file": "p05_r3_month_end_v09.xml"
+        },
+        {
+          "case": "R3-06",
+          "category": "CORNER",
+          "transaction_id": "R3-E2E-06",
+          "status": "IMPORTED",
+          "flags": [
+            "FAR_FUTURE_DUE"
+          ],
+          "note": ".09 Dt month end + 1 day",
+          "fields": {
+            "debtor_account": "86011117946",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-05-01",
+            "created_date": "2026-01-31"
+          },
+          "file": "p05_r3_month_end_v09.xml"
+        },
+        {
+          "case": "R3-07",
+          "category": "CORNER",
+          "transaction_id": "R3-E2E-07",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": ".09 DtTm month end, late in the day",
+          "fields": {
+            "debtor_account": "86011117946",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-04-30",
+            "created_date": "2026-01-31"
+          },
+          "file": "p05_r3_month_end_v09.xml"
+        },
+        {
+          "case": "R3-08",
+          "category": "CORNER",
+          "transaction_id": "R3-E2E-08",
+          "status": "IMPORTED",
+          "flags": [
+            "FAR_FUTURE_DUE"
+          ],
+          "note": ".09 DtTm month end + 1 day at midnight",
+          "fields": {
+            "debtor_account": "86011117946",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-05-01",
+            "created_date": "2026-01-31"
+          },
+          "file": "p05_r3_month_end_v09.xml"
+        }
+      ]
+    },
+    {
+      "file": "p06_r3_v09.xml",
+      "case": "FILE-P06",
+      "category": "CORNER",
+      "note": "FAR_FUTURE_DUE exactly 3 months, .09 Dt and DtTm",
+      "summary": {
+        "imported": 5,
+        "flagged": 3,
+        "duplicates": 0,
+        "errors": 0
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "R3-09",
+          "category": "CORNER",
+          "transaction_id": "R3-E2E-09",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": ".09 Dt exactly 3 months",
+          "fields": {
+            "debtor_account": "86011117947",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2027-01-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p06_r3_v09.xml"
+        },
+        {
+          "case": "R3-10",
+          "category": "CORNER",
+          "transaction_id": "R3-E2E-10",
+          "status": "IMPORTED",
+          "flags": [
+            "FAR_FUTURE_DUE"
+          ],
+          "note": ".09 Dt 3 months + 1 day",
+          "fields": {
+            "debtor_account": "86011117947",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2027-01-02",
+            "created_date": "2026-10-01"
+          },
+          "file": "p06_r3_v09.xml"
+        },
+        {
+          "case": "R3-11",
+          "category": "CORNER",
+          "transaction_id": "R3-E2E-11",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": ".09 DtTm exactly 3 months (time ignored)",
+          "fields": {
+            "debtor_account": "86011117947",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2027-01-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p06_r3_v09.xml"
+        },
+        {
+          "case": "R3-12",
+          "category": "CORNER",
+          "transaction_id": "R3-E2E-12",
+          "status": "IMPORTED",
+          "flags": [
+            "FAR_FUTURE_DUE"
+          ],
+          "note": ".09 DtTm 3 months + 1 day",
+          "fields": {
+            "debtor_account": "86011117947",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2027-01-02",
+            "created_date": "2026-10-01"
+          },
+          "file": "p06_r3_v09.xml"
+        },
+        {
+          "case": "R3-13",
+          "category": "POS",
+          "transaction_id": "R3-E2E-13",
+          "status": "IMPORTED",
+          "flags": [
+            "FAR_FUTURE_DUE"
+          ],
+          "note": "clearly far in the future",
+          "fields": {
+            "debtor_account": "86011117947",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2027-06-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p06_r3_v09.xml"
+        }
+      ]
+    },
+    {
+      "file": "p07_past_due_v03.xml",
+      "case": "FILE-P07",
+      "category": "NEG",
+      "note": "due date before CreDtTm, .03",
+      "summary": {
+        "imported": 2,
+        "flagged": 2,
+        "duplicates": 0,
+        "errors": 0
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "PAST-01",
+          "category": "CORNER",
+          "transaction_id": "PAST-E2E-01",
+          "status": "IMPORTED",
+          "flags": [
+            "PAST_DUE_DATE"
+          ],
+          "note": ".03: due one day before CreDtTm: PAST_DUE_DATE, kept (PO)",
+          "fields": {
+            "debtor_account": "86011117948",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-09-30",
+            "created_date": "2026-10-01"
+          },
+          "file": "p07_past_due_v03.xml"
+        },
+        {
+          "case": "PAST-02",
+          "category": "NEG",
+          "transaction_id": "PAST-E2E-02",
+          "status": "IMPORTED",
+          "flags": [
+            "PAST_DUE_DATE"
+          ],
+          "note": ".03: due a month before CreDtTm: PAST_DUE_DATE, kept (PO)",
+          "fields": {
+            "debtor_account": "86011117948",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-09-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p07_past_due_v03.xml"
+        }
+      ]
+    },
+    {
+      "file": "p08_past_due_v09.xml",
+      "case": "FILE-P08",
+      "category": "NEG",
+      "note": "due date before CreDtTm, .09",
+      "summary": {
+        "imported": 2,
+        "flagged": 2,
+        "duplicates": 0,
+        "errors": 0
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "PAST-03",
+          "category": "CORNER",
+          "transaction_id": "PAST-E2E-03",
+          "status": "IMPORTED",
+          "flags": [
+            "PAST_DUE_DATE"
+          ],
+          "note": ".09 Dt one day before CreDtTm",
+          "fields": {
+            "debtor_account": "86011117949",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-09-30",
+            "created_date": "2026-10-01"
+          },
+          "file": "p08_past_due_v09.xml"
+        },
+        {
+          "case": "PAST-04",
+          "category": "CORNER",
+          "transaction_id": "PAST-E2E-04",
+          "status": "IMPORTED",
+          "flags": [
+            "PAST_DUE_DATE"
+          ],
+          "note": ".09 DtTm one day before CreDtTm",
+          "fields": {
+            "debtor_account": "86011117949",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-09-30",
+            "created_date": "2026-10-01"
+          },
+          "file": "p08_past_due_v09.xml"
+        }
+      ]
+    },
+    {
+      "file": "p09_currency.xml",
+      "case": "FILE-P09",
+      "category": "NEG",
+      "note": "per-currency HIGH_AMOUNT limits (NOK/SEK 10000, EUR 1000) and unsupported currencies",
+      "summary": {
+        "imported": 18,
+        "flagged": 12,
+        "duplicates": 0,
+        "errors": 0
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "CUR-01",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-01",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "EUR under the EUR limit, debtor's first txn: no flags",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "EUR",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-02",
+          "category": "POS",
+          "transaction_id": "CUR-E2E-02",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "SEK over the SEK limit: HIGH_AMOUNT only",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "50000.00",
+            "currency": "SEK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-03",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-03",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "NOK control: no currency flag",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-05",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-05",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "SEK exactly at the limit is not flagged",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "10000.00",
+            "currency": "SEK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-06",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-06",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "SEK one ore over the limit",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "10000.01",
+            "currency": "SEK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-07",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-07",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "EUR exactly at the EUR limit is not flagged",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "1000.00",
+            "currency": "EUR",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-08",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-08",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "EUR one cent over the EUR limit",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "1000.01",
+            "currency": "EUR",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-09",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-09",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "EUR one cent under the EUR limit",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "999.99",
+            "currency": "EUR",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-10",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-10",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "EUR three decimals, just over the EUR limit",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "1000.001",
+            "currency": "EUR",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-11",
+          "category": "POS",
+          "transaction_id": "CUR-E2E-11",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "EUR 1500 is high, the same amount in NOK is not (no conversion)",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "1500.00",
+            "currency": "EUR",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-12",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-12",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "NOK 1500 control for CUR-11: no flags",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "1500.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-13",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-13",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "Ccy=\"sek\" upper-cased on import: SEK limit applies",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "50000.00",
+            "currency": "SEK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-14",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-14",
+          "status": "IMPORTED",
+          "flags": [
+            "UNSUPPORTED_CURRENCY"
+          ],
+          "note": "USD over every limit: UNSUPPORTED_CURRENCY only, no HIGH_AMOUNT",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "50000.00",
+            "currency": "USD",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-15",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-15",
+          "status": "IMPORTED",
+          "flags": [
+            "UNSUPPORTED_CURRENCY"
+          ],
+          "note": "DKK (Nordic neighbour): unsupported, no HIGH_AMOUNT",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "50000.00",
+            "currency": "DKK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-16",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-16",
+          "status": "IMPORTED",
+          "flags": [
+            "UNSUPPORTED_CURRENCY"
+          ],
+          "note": "GBP: unsupported",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "GBP",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-17",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-17",
+          "status": "IMPORTED",
+          "flags": [
+            "UNSUPPORTED_CURRENCY"
+          ],
+          "note": "Ccy=\"EURO\" is not EUR: imported as unsupported, no HIGH_AMOUNT",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "5000.00",
+            "currency": "EURO",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-04",
+          "category": "POS",
+          "transaction_id": "CUR-E2E-04",
+          "status": "IMPORTED",
+          "flags": [
+            "FAR_FUTURE_DUE",
+            "HIGH_AMOUNT",
+            "NEW_CREDITOR"
+          ],
+          "note": "EUR high + new creditor + far due: no currency flag",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100002",
+            "amount": "20000.00",
+            "currency": "EUR",
+            "due_date": "2027-06-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-18",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-18",
+          "status": "IMPORTED",
+          "flags": [
+            "FAR_FUTURE_DUE",
+            "NEW_CREDITOR",
+            "UNSUPPORTED_CURRENCY"
+          ],
+          "note": "USD + new creditor + far due: other rules still apply, no HIGH_AMOUNT",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100003",
+            "amount": "50000.00",
+            "currency": "USD",
+            "due_date": "2027-06-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        }
+      ]
+    },
+    {
+      "file": "p10_accounts.xml",
+      "case": "FILE-P10",
+      "category": "CORNER",
+      "note": "IBAN vs Othr, BBAN with and without dots",
+      "summary": {
+        "imported": 6,
+        "flagged": 2,
+        "duplicates": 0,
+        "errors": 0
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "ACC-01",
+          "category": "CORNER",
+          "transaction_id": "ACC-E2E-01",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "BBAN with dots, debtor's first txn",
+          "fields": {
+            "debtor_account": "12345670001",
+            "creditor_account": "90001100011",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p10_accounts.xml"
+        },
+        {
+          "case": "ACC-02",
+          "category": "CORNER",
+          "transaction_id": "ACC-E2E-02",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "same debtor and creditor written without dots: known",
+          "fields": {
+            "debtor_account": "12345670001",
+            "creditor_account": "90001100011",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p10_accounts.xml"
+        },
+        {
+          "case": "ACC-03",
+          "category": "CORNER",
+          "transaction_id": "ACC-E2E-03",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "creditor written with spaces: known",
+          "fields": {
+            "debtor_account": "12345670001",
+            "creditor_account": "90001100011",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p10_accounts.xml"
+        },
+        {
+          "case": "ACC-04",
+          "category": "CORNER",
+          "transaction_id": "ACC-E2E-04",
+          "status": "IMPORTED",
+          "flags": [
+            "NEW_CREDITOR"
+          ],
+          "note": "IBAN of the same creditor is a different key per PO rule (open question)",
+          "fields": {
+            "debtor_account": "12345670001",
+            "creditor_account": "NO2090001100011",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p10_accounts.xml"
+        },
+        {
+          "case": "ACC-05",
+          "category": "NEG",
+          "transaction_id": "ACC-E2E-05",
+          "status": "IMPORTED",
+          "flags": [
+            "NEW_CREDITOR"
+          ],
+          "note": "differs in the last digit: different creditor",
+          "fields": {
+            "debtor_account": "12345670001",
+            "creditor_account": "90001100012",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p10_accounts.xml"
+        },
+        {
+          "case": "ACC-06",
+          "category": "CORNER",
+          "transaction_id": "ACC-E2E-06",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "debtor as IBAN is a new debtor per PO rule: first txn (open question)",
+          "fields": {
+            "debtor_account": "NO6012345670001",
+            "creditor_account": "90001100011",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p10_accounts.xml"
+        }
+      ]
+    },
+    {
+      "file": "p11_row_errors.xml",
+      "case": "FILE-P11",
+      "category": "NEG",
+      "note": "per-transaction errors, valid txns still imported",
+      "summary": {
+        "imported": 2,
+        "flagged": 1,
+        "duplicates": 0,
+        "errors": 6
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "ROW-01",
+          "category": "POS",
+          "transaction_id": "ROW-E2E-01",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "valid txn before the bad ones",
+          "fields": {
+            "debtor_account": "86011117951",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p11_row_errors.xml"
+        },
+        {
+          "case": "ROW-02",
+          "category": "NEG",
+          "transaction_id": "ROW-E2E-02",
+          "status": "ERROR",
+          "flags": [],
+          "note": "CdtrAcct missing: per-transaction error",
+          "error_contains": [
+            "ROW-E2E-02"
+          ],
+          "file": "p11_row_errors.xml"
+        },
+        {
+          "case": "ROW-03",
+          "category": "NEG",
+          "transaction_id": "ROW-E2E-03",
+          "status": "ERROR",
+          "flags": [],
+          "note": "EqvtAmt instead of InstdAmt: per-transaction error",
+          "error_contains": [
+            "ROW-E2E-03"
+          ],
+          "file": "p11_row_errors.xml"
+        },
+        {
+          "case": "ROW-04",
+          "category": "NEG",
+          "transaction_id": "ROW-E2E-04",
+          "status": "ERROR",
+          "flags": [],
+          "note": "zero amount: rejected (PO)",
+          "error_contains": [
+            "ROW-E2E-04"
+          ],
+          "file": "p11_row_errors.xml"
+        },
+        {
+          "case": "ROW-05",
+          "category": "NEG",
+          "transaction_id": "ROW-E2E-05",
+          "status": "ERROR",
+          "flags": [],
+          "note": "negative amount: rejected (PO)",
+          "error_contains": [
+            "ROW-E2E-05"
+          ],
+          "file": "p11_row_errors.xml"
+        },
+        {
+          "case": "ROW-06",
+          "category": "NEG",
+          "transaction_id": "ROW-E2E-06",
+          "status": "ERROR",
+          "flags": [],
+          "note": "non-numeric amount",
+          "error_contains": [
+            "ROW-E2E-06"
+          ],
+          "file": "p11_row_errors.xml"
+        },
+        {
+          "case": "ROW-07",
+          "category": "NEG",
+          "transaction_id": "ROW-E2E-07",
+          "status": "ERROR",
+          "flags": [],
+          "note": "InstdAmt without Ccy",
+          "error_contains": [
+            "ROW-E2E-07"
+          ],
+          "file": "p11_row_errors.xml"
+        },
+        {
+          "case": "ROW-08",
+          "category": "POS",
+          "transaction_id": "ROW-E2E-08",
+          "status": "IMPORTED",
+          "flags": [
+            "NEW_CREDITOR"
+          ],
+          "note": "rejected txns to C_C are not history: C_C still new",
+          "fields": {
+            "debtor_account": "86011117951",
+            "creditor_account": "90001100003",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p11_row_errors.xml"
+        }
+      ]
+    },
+    {
+      "file": "p12_ids.xml",
+      "case": "FILE-P12",
+      "category": "CORNER",
+      "note": "NOTPROVIDED / InstrId fallback and duplicates in one file",
+      "summary": {
+        "imported": 3,
+        "flagged": 0,
+        "duplicates": 2,
+        "errors": 2
+      },
+      "duplicates": [
+        "ID-INS-01",
+        "ID-E2E-06"
+      ],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "ID-01",
+          "category": "POS",
+          "transaction_id": "ID-INS-01",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "EndToEndId NOTPROVIDED: InstrId used as id",
+          "fields": {
+            "debtor_account": "86011117952",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p12_ids.xml"
+        },
+        {
+          "case": "ID-02",
+          "category": "NEG",
+          "transaction_id": "",
+          "status": "ERROR",
+          "flags": [],
+          "note": "NOTPROVIDED without InstrId: error",
+          "error_contains": [
+            "NOTPROVIDED"
+          ],
+          "file": "p12_ids.xml"
+        },
+        {
+          "case": "ID-03",
+          "category": "NEG",
+          "transaction_id": "",
+          "status": "ERROR",
+          "flags": [],
+          "note": "NOTPROVIDED without InstrId again: error, not a duplicate of 'NOTPROVIDED'",
+          "error_contains": [
+            "NOTPROVIDED"
+          ],
+          "file": "p12_ids.xml"
+        },
+        {
+          "case": "ID-04",
+          "category": "CORNER",
+          "transaction_id": "ID-INS-02",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "NOTPROVIDED repeated with another InstrId: imported",
+          "fields": {
+            "debtor_account": "86011117952",
+            "creditor_account": "90001100001",
+            "amount": "200.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p12_ids.xml"
+        },
+        {
+          "case": "ID-05",
+          "category": "CORNER",
+          "transaction_id": "ID-INS-01",
+          "status": "DUPLICATE",
+          "flags": [],
+          "note": "NOTPROVIDED repeated with the same InstrId: duplicate, not flagged R1",
+          "file": "p12_ids.xml"
+        },
+        {
+          "case": "ID-06",
+          "category": "POS",
+          "transaction_id": "ID-E2E-06",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "EndToEndId wins over InstrId",
+          "fields": {
+            "debtor_account": "86011117952",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p12_ids.xml"
+        },
+        {
+          "case": "ID-07",
+          "category": "NEG",
+          "transaction_id": "ID-E2E-06",
+          "status": "DUPLICATE",
+          "flags": [],
+          "note": "same EndToEndId in the same file: skipped, not flagged R1",
+          "file": "p12_ids.xml"
+        }
+      ]
+    },
+    {
+      "file": "p13_second_batch.xml",
+      "case": "FILE-P13",
+      "category": "POS",
+      "note": "second batch: R2 and duplicates across files",
+      "summary": {
+        "imported": 2,
+        "flagged": 1,
+        "duplicates": 2,
+        "errors": 0
+      },
+      "duplicates": [
+        "ID-E2E-06",
+        "V03-E2E-03"
+      ],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "XB-01",
+          "category": "POS",
+          "transaction_id": "XB-E2E-01",
+          "status": "IMPORTED",
+          "flags": [
+            "NEW_CREDITOR"
+          ],
+          "note": "debtor known from an earlier XML import: D is new",
+          "fields": {
+            "debtor_account": "NO9386011117942",
+            "creditor_account": "90001100004",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-20",
+            "created_date": "2026-10-02"
+          },
+          "file": "p13_second_batch.xml"
+        },
+        {
+          "case": "XB-02",
+          "category": "POS",
+          "transaction_id": "XB-E2E-02",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "creditor paid in the earlier import: known",
+          "fields": {
+            "debtor_account": "NO9386011117942",
+            "creditor_account": "90001100002",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-20",
+            "created_date": "2026-10-02"
+          },
+          "file": "p13_second_batch.xml"
+        },
+        {
+          "case": "XB-03",
+          "category": "NEG",
+          "transaction_id": "ID-E2E-06",
+          "status": "DUPLICATE",
+          "flags": [],
+          "note": "EndToEndId imported by an earlier file: skipped",
+          "file": "p13_second_batch.xml"
+        },
+        {
+          "case": "XB-04",
+          "category": "NEG",
+          "transaction_id": "V03-E2E-03",
+          "status": "DUPLICATE",
+          "flags": [],
+          "note": "id from another debtor's earlier file: skipped",
+          "file": "p13_second_batch.xml"
+        }
+      ]
+    },
+    {
+      "file": "p01_v03_basic.xml",
+      "case": "FILE-REUP",
+      "category": "NEG",
+      "note": "same file uploaded again: everything duplicate, nothing re-flagged",
+      "summary": {
+        "imported": 0,
+        "flagged": 0,
+        "duplicates": 5,
+        "errors": 0
+      },
+      "duplicates": [
+        "V03-E2E-01",
+        "V03-E2E-02",
+        "V03-E2E-03",
+        "V03-E2E-04",
+        "V03-E2E-05"
+      ],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "REUP-01",
+          "category": "NEG",
+          "transaction_id": "V03-E2E-01",
+          "status": "DUPLICATE",
+          "flags": [],
+          "note": "re-upload of p01: V03-01 skipped",
+          "file": "p01_v03_basic.xml"
+        },
+        {
+          "case": "REUP-02",
+          "category": "NEG",
+          "transaction_id": "V03-E2E-02",
+          "status": "DUPLICATE",
+          "flags": [],
+          "note": "re-upload of p01: V03-02 skipped",
+          "file": "p01_v03_basic.xml"
+        },
+        {
+          "case": "REUP-03",
+          "category": "NEG",
+          "transaction_id": "V03-E2E-03",
+          "status": "DUPLICATE",
+          "flags": [],
+          "note": "re-upload of p01: V03-03 skipped",
+          "file": "p01_v03_basic.xml"
+        },
+        {
+          "case": "REUP-04",
+          "category": "NEG",
+          "transaction_id": "V03-E2E-04",
+          "status": "DUPLICATE",
+          "flags": [],
+          "note": "re-upload of p01: V03-04 skipped",
+          "file": "p01_v03_basic.xml"
+        },
+        {
+          "case": "REUP-05",
+          "category": "NEG",
+          "transaction_id": "V03-E2E-05",
+          "status": "DUPLICATE",
+          "flags": [],
+          "note": "re-upload of p01: V03-05 skipped",
+          "file": "p01_v03_basic.xml"
+        }
+      ]
+    },
+    {
+      "file": "f01_unknown_ns_v12.xml",
+      "case": "FILE-01",
+      "category": "NEG",
+      "note": "pain.001.001.12 (not supported yet): whole file rejected",
+      "summary": {
+        "imported": 0,
+        "flagged": 0,
+        "duplicates": 0,
+        "errors": 1
+      },
+      "duplicates": [],
+      "rejected": true,
+      "file_error": "unsupported document type",
+      "transactions": []
+    },
+    {
+      "file": "f02_pain008.xml",
+      "case": "FILE-02",
+      "category": "NEG",
+      "note": "pain.008 direct debit: whole file rejected",
+      "summary": {
+        "imported": 0,
+        "flagged": 0,
+        "duplicates": 0,
+        "errors": 1
+      },
+      "duplicates": [],
+      "rejected": true,
+      "file_error": "unsupported document type",
+      "transactions": []
+    },
+    {
+      "file": "f03_no_namespace.xml",
+      "case": "FILE-03",
+      "category": "NEG",
+      "note": "Document without namespace: whole file rejected",
+      "summary": {
+        "imported": 0,
+        "flagged": 0,
+        "duplicates": 0,
+        "errors": 1
+      },
+      "duplicates": [],
+      "rejected": true,
+      "file_error": "unsupported document type",
+      "transactions": []
+    },
+    {
+      "file": "f04_invalid_xml.xml",
+      "case": "FILE-04",
+      "category": "NEG",
+      "note": "truncated XML: whole file rejected, nothing imported",
+      "summary": {
+        "imported": 0,
+        "flagged": 0,
+        "duplicates": 0,
+        "errors": 1
+      },
+      "duplicates": [],
+      "rejected": true,
+      "file_error": "not valid XML",
+      "transactions": []
+    },
+    {
+      "file": "f05_empty_document.xml",
+      "case": "FILE-05",
+      "category": "CORNER",
+      "note": "empty Document: one clear error, nothing imported",
+      "summary": {
+        "imported": 0,
+        "flagged": 0,
+        "duplicates": 0,
+        "errors": 1
+      },
+      "duplicates": [],
+      "rejected": true,
+      "file_error": "no transactions",
+      "transactions": []
+    },
+    {
+      "file": "f06_no_pmtinf.xml",
+      "case": "FILE-06",
+      "category": "CORNER",
+      "note": "GrpHdr only, no PmtInf: one clear error, nothing imported",
+      "summary": {
+        "imported": 0,
+        "flagged": 0,
+        "duplicates": 0,
+        "errors": 1
+      },
+      "duplicates": [],
+      "rejected": true,
+      "file_error": "no transactions",
+      "transactions": []
+    },
+    {
+      "file": "f07_zero_bytes.xml",
+      "case": "FILE-07",
+      "category": "NEG",
+      "note": "0-byte upload: one clear error, no crash",
+      "summary": {
+        "imported": 0,
+        "flagged": 0,
+        "duplicates": 0,
+        "errors": 1
+      },
+      "duplicates": [],
+      "rejected": true,
+      "file_error": "not valid XML",
+      "transactions": []
+    },
+    {
+      "file": "f08_binary.xml",
+      "case": "FILE-08",
+      "category": "NEG",
+      "note": "binary content with .xml extension: one clear error, no crash",
+      "summary": {
+        "imported": 0,
+        "flagged": 0,
+        "duplicates": 0,
+        "errors": 1
+      },
+      "duplicates": [],
+      "rejected": true,
+      "file_error": null,
+      "transactions": []
+    },
+    {
+      "file": "f09_doctype_internal_entity.xml",
+      "case": "FILE-09",
+      "category": "NEG",
+      "note": "DOCTYPE with an internal entity: whole file refused, no crash",
+      "summary": {
+        "imported": 0,
+        "flagged": 0,
+        "duplicates": 0,
+        "errors": 1
+      },
+      "duplicates": [],
+      "rejected": true,
+      "file_error": null,
+      "transactions": []
+    },
+    {
+      "file": "f10_doctype_external_entity.xml",
+      "case": "FILE-10",
+      "category": "NEG",
+      "note": "DOCTYPE with an external (XXE) entity: whole file refused, no file read, no crash",
+      "summary": {
+        "imported": 0,
+        "flagged": 0,
+        "duplicates": 0,
+        "errors": 1
+      },
+      "duplicates": [],
+      "rejected": true,
+      "file_error": null,
+      "transactions": []
+    },
+    {
+      "file": "f11_prefixed_namespace.xml",
+      "case": "FILE-11",
+      "category": "CORNER",
+      "note": "ns0: prefixed namespace: accepted like the default namespace (judgement call)",
+      "summary": {
+        "imported": 1,
+        "flagged": 0,
+        "duplicates": 0,
+        "errors": 0
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "NSP-01",
+          "category": "CORNER",
+          "transaction_id": "NSP-E2E-01",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "ns0: prefixed namespace is the same document: accepted (judgement call)",
+          "fields": {
+            "debtor_account": "86011117960",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "f11_prefixed_namespace.xml"
+        }
+      ]
+    },
+    {
+      "file": "f12_utf8_bom.xml",
+      "case": "FILE-12",
+      "category": "CORNER",
+      "note": "UTF-8 BOM: accepted",
+      "summary": {
+        "imported": 1,
+        "flagged": 0,
+        "duplicates": 0,
+        "errors": 0
+      },
+      "duplicates": [],
+      "rejected": false,
+      "file_error": null,
+      "transactions": [
+        {
+          "case": "BOM-01",
+          "category": "CORNER",
+          "transaction_id": "BOM-E2E-01",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "UTF-8 BOM before the XML declaration: accepted",
+          "fields": {
+            "debtor_account": "86011117961",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "f12_utf8_bom.xml"
+        }
+      ]
+    }
+  ],
+  "cross_format": {
+    "file": "x_cross_csv.xml",
+    "case": "FILE-XC",
+    "category": "POS",
+    "note": "imported after all_rules.csv into the same store",
+    "summary": {
+      "imported": 4,
+      "flagged": 1,
+      "duplicates": 1,
+      "errors": 0
+    },
+    "duplicates": [
+      "T-POS-01"
+    ],
+    "rejected": false,
+    "file_error": null,
+    "transactions": [
+      {
+        "case": "XC-01",
+        "category": "POS",
+        "transaction_id": "XC-E2E-01",
+        "status": "IMPORTED",
+        "flags": [],
+        "note": "CSV debtor 1234.56.78901 paid 9000.11.00001 in all_rules.csv: known",
+        "fields": {
+          "debtor_account": "12345678901",
+          "creditor_account": "90001100001",
+          "amount": "100.00",
+          "currency": "NOK",
+          "due_date": "2026-11-15",
+          "created_date": "2026-10-23"
+        },
+        "file": "x_cross_csv.xml"
+      },
+      {
+        "case": "XC-02",
+        "category": "POS",
+        "transaction_id": "XC-E2E-02",
+        "status": "IMPORTED",
+        "flags": [
+          "NEW_CREDITOR"
+        ],
+        "note": "CSV debtor never paid 9000.11.00002: new creditor",
+        "fields": {
+          "debtor_account": "12345678901",
+          "creditor_account": "90001100002",
+          "amount": "100.00",
+          "currency": "NOK",
+          "due_date": "2026-11-15",
+          "created_date": "2026-10-23"
+        },
+        "file": "x_cross_csv.xml"
+      },
+      {
+        "case": "XC-03",
+        "category": "CORNER",
+        "transaction_id": "XC-E2E-03",
+        "status": "IMPORTED",
+        "flags": [],
+        "note": "paid by XC-02 earlier in this XML: known",
+        "fields": {
+          "debtor_account": "12345678901",
+          "creditor_account": "90001100002",
+          "amount": "100.00",
+          "currency": "NOK",
+          "due_date": "2026-11-15",
+          "created_date": "2026-10-23"
+        },
+        "file": "x_cross_csv.xml"
+      },
+      {
+        "case": "XC-04",
+        "category": "CORNER",
+        "transaction_id": "XC-E2E-04",
+        "status": "IMPORTED",
+        "flags": [],
+        "note": "CSV debtor 5000.11.55555 paid 9000.11.00002 in all_rules.csv: known",
+        "fields": {
+          "debtor_account": "50001155555",
+          "creditor_account": "90001100002",
+          "amount": "100.00",
+          "currency": "NOK",
+          "due_date": "2026-11-15",
+          "created_date": "2026-10-23"
+        },
+        "file": "x_cross_csv.xml"
+      },
+      {
+        "case": "XC-05",
+        "category": "CORNER",
+        "transaction_id": "T-POS-01",
+        "status": "DUPLICATE",
+        "flags": [],
+        "note": "EndToEndId equal to a CSV transaction_id: duplicate across formats",
+        "file": "x_cross_csv.xml"
+      }
+    ],
+    "after_csv": "all_rules.csv"
+  }
+}
