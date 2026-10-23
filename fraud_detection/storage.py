@@ -2,6 +2,7 @@
 
 import json
 import sqlite3
+import threading
 from contextlib import contextmanager
 from datetime import date
 from decimal import Decimal
@@ -26,24 +27,46 @@ CREATE INDEX IF NOT EXISTS ix_debtor_creditor ON transactions (debtor_account, c
 """
 
 
+BUSY_TIMEOUT_SECONDS = 30  # how long a second import waits for the first one to finish
+
+
+class StorageError(Exception):
+    """The database file cannot be used; the message is meant for the end user."""
+
+
 class TransactionStore:
     def __init__(self, path: str | Path):
-        self._conn = sqlite3.connect(str(path), check_same_thread=False)
-        self._conn.executescript(SCHEMA)
+        self._conn = sqlite3.connect(str(path), timeout=BUSY_TIMEOUT_SECONDS, check_same_thread=False)
+        try:
+            self._conn.executescript(SCHEMA)
+        except sqlite3.DatabaseError as exc:
+            self._conn.close()
+            raise StorageError(
+                f"{path} is not a valid database file ({exc}). "
+                "Restore your backup of it, or move it away to start with an empty database."
+            ) from None
         self._in_batch = False
+        # One connection is shared by the web server's threads; imports must not interleave on it.
+        self._lock = threading.RLock()
 
     def close(self) -> None:
         self._conn.close()
 
     @contextmanager
     def batch(self):
-        """One commit for everything added inside, instead of one per row (rolled back on error)."""
-        self._in_batch = True
-        try:
-            with self._conn:
-                yield
-        finally:
-            self._in_batch = False
+        """One commit for everything added inside, instead of one per row (rolled back on error).
+
+        Takes the database write lock up front (BEGIN IMMEDIATE), so the duplicate checks made
+        inside see every row a concurrent import committed; a second import waits instead.
+        """
+        with self._lock:
+            self._conn.execute("BEGIN IMMEDIATE")
+            self._in_batch = True
+            try:
+                with self._conn:
+                    yield
+            finally:
+                self._in_batch = False
 
     def exists(self, transaction_id: str) -> bool:
         row = self._conn.execute(
@@ -72,26 +95,22 @@ class TransactionStore:
             self._conn.commit()
 
     def all(self) -> list[StoredTransaction]:
-        rows = self._conn.execute(
-            "SELECT transaction_id, debtor_account, creditor_account, amount, currency,"
-            " due_date, created_date, import_date, flags FROM transactions ORDER BY seq"
-        ).fetchall()
-        return [
-            StoredTransaction(
-                transaction=Transaction(
-                    transaction_id=r[0],
-                    debtor_account=r[1],
-                    creditor_account=r[2],
-                    amount=Decimal(r[3]),
-                    currency=r[4],
-                    due_date=date.fromisoformat(r[5]),
-                    created_date=date.fromisoformat(r[6]) if r[6] else None,
-                ),
-                import_date=date.fromisoformat(r[7]),
-                flags=tuple(json.loads(r[8])),
-            )
-            for r in rows
-        ]
+        with self._lock:  # don't read a half-finished import through the shared connection
+            rows = self._conn.execute(f"{SELECT_STORED} ORDER BY seq").fetchall()
+        return [_stored(r) for r in rows]
+
+    def count(self) -> int:
+        with self._lock:
+            row = self._conn.execute("SELECT COUNT(*) FROM transactions").fetchone()
+        return row[0]
+
+    def page(self, offset: int, limit: int) -> list[StoredTransaction]:
+        """Newest first: `limit` transactions after skipping the `offset` most recent ones."""
+        with self._lock:
+            rows = self._conn.execute(
+                f"{SELECT_STORED} ORDER BY seq DESC LIMIT ? OFFSET ?", (limit, offset)
+            ).fetchall()
+        return [_stored(r) for r in rows]
 
     # History protocol
 
@@ -107,3 +126,25 @@ class TransactionStore:
             (debtor_account, creditor_account),
         ).fetchone()
         return row is not None
+
+
+SELECT_STORED = (
+    "SELECT transaction_id, debtor_account, creditor_account, amount, currency,"
+    " due_date, created_date, import_date, flags FROM transactions"
+)
+
+
+def _stored(r) -> StoredTransaction:
+    return StoredTransaction(
+        transaction=Transaction(
+            transaction_id=r[0],
+            debtor_account=r[1],
+            creditor_account=r[2],
+            amount=Decimal(r[3]),
+            currency=r[4],
+            due_date=date.fromisoformat(r[5]),
+            created_date=date.fromisoformat(r[6]) if r[6] else None,
+        ),
+        import_date=date.fromisoformat(r[7]),
+        flags=tuple(json.loads(r[8])),
+    )

@@ -3,11 +3,20 @@
 {% block content %}
 <h1>All transactions</h1>
 {% if transactions %}
+{% macro pager() %}
+<p class="pager">
+  Showing {{ first }}–{{ last }} of {{ total }} (newest first)
+  {% if page > 1 %}<a href="{{ url_for('transactions', page=page - 1) }}">‹ Previous</a>{% endif %}
+  {% if pages > 1 %}<span>Page {{ page }} of {{ pages }}</span>{% endif %}
+  {% if page < pages %}<a href="{{ url_for('transactions', page=page + 1) }}">Next ›</a>{% endif %}
+</p>
+{% endmacro %}
+{{ pager() }}
 <table>
   <thead>
     <tr>
       <th>Transaction ID</th><th>Debtor account</th><th>Creditor account</th><th>Amount</th>
-      <th>Currency</th><th>Due date</th><th>Created date</th><th>Imported</th><th>Status</th><th>Rules triggered</th>
+      <th>Currency</th><th>Due date</th><th>Created date</th><th>Imported</th><th>Status</th><th>Why flagged</th>
     </tr>
   </thead>
   <tbody>
@@ -23,11 +32,12 @@
       <td>{{ t.created_date or "" }}</td>
       <td>{{ s.import_date }}</td>
       <td>{% if s.flags %}Flagged{% else %}OK{% endif %}</td>
-      <td>{% for code in s.flags %}<span class="rule">{{ code }}</span>{% endfor %}</td>
+      <td>{% for code in s.flags %}<div class="rule">{{ reason(code, s) }} <span class="code">{{ code }}</span></div>{% endfor %}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
+{{ pager() }}
 {% else %}
 <p>No transactions yet. <a href="{{ url_for('upload_form') }}">Upload a file</a>.</p>
 {% endif %}

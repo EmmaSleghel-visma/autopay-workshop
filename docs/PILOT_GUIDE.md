@@ -5,12 +5,14 @@ It runs on your own Windows PC and you use it in your web browser.
 
 ## 1. Install (once)
 
-1. Install **Python 3.10 or newer** from python.org. In the installer, tick **"Add python.exe to PATH"**.
-2. Unzip the app folder you received from us, for example to `C:\FraudDetection`.
+1. Install **Python 3.10 or newer** from python.org ("Download Python", run the installer, keep the default options).
+2. Right-click the zip you received from us, choose **Extract All...** and extract it, for example to `C:\`.
+   The zip contains one folder; the **app folder** is the one with `start.bat` in it, e.g. `C:\FraudDetection`.
 
 ## 2. Start the app
 
-Double-click **`start.bat`** in the app folder. The first time, it sets the app up (about a minute, needs internet once).
+Double-click **`start.bat`** in the app folder. If Windows shows **"Windows protected your PC"**, click **More info**, then **Run anyway**.
+The first time, it sets the app up (about a minute, needs internet once).
 Your browser then opens **http://127.0.0.1:5000**. If the page does not load at once, refresh it.
 Keep the black window open while you use the app; close it to stop the app.
 The window shows a "development server" warning - that is expected for this pilot and safe to ignore.
