@@ -28,7 +28,8 @@ class CsvImporter:
     def parse(self, source: TextIO) -> ParseResult:
         result = ParseResult()
         reader = csv.DictReader(source)
-        header = [h.strip() for h in (reader.fieldnames or [])]
+        # lstrip the UTF-8 BOM that Excel puts in front of the first column name
+        header = [h.lstrip("﻿").strip() for h in (reader.fieldnames or [])]
         missing = [c for c in REQUIRED_COLUMNS if c not in header]
         if missing:
             result.errors.append(RowError(1, f"missing column(s): {', '.join(missing)}"))

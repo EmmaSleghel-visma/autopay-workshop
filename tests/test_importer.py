@@ -34,6 +34,12 @@ def test_created_date_is_optional():
     assert result.transactions[0].created_date is None
 
 
+def test_utf8_bom_before_header_is_ignored():
+    result = parse("﻿" + HEADER + "t1,1,2,5.00,NOK,2026-11-30,\n")
+    assert result.errors == []
+    assert result.transactions[0].transaction_id == "t1"
+
+
 def test_missing_required_column_rejects_file():
     result = parse("transaction_id,debtor_account,amount,currency,due_date\nt1,1,5,NOK,2026-11-30\n")
     assert result.transactions == []
