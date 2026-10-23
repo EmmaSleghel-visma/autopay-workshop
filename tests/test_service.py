@@ -84,3 +84,15 @@ def test_import_is_all_or_nothing_when_evaluation_fails(tmp_path):
     except RuntimeError:
         pass
     assert store.all() == []  # t1 rolled back with the failed batch
+
+
+def test_created_date_near_year_9999_does_not_crash_the_import(tmp_path):
+    from fraud_detection import rules
+    store = TransactionStore(tmp_path / "fraud.db")
+    csv_text = (
+        "transaction_id,debtor_account,creditor_account,amount,currency,due_date,created_date\n"
+        "t1,D1,C1,5.00,NOK,2026-11-30,9999-10-01\n"
+    )
+    summary = run(store, csv_text, rules.evaluate)
+    assert summary.imported == 1
+    assert store.all()[0].flags == ("PAST_DUE_DATE",)  # due 2026 is before created 9999

@@ -56,4 +56,6 @@ def _add_months(day: date, months: int) -> date:
     month_index = day.month - 1 + months
     year = day.year + month_index // 12
     month = month_index % 12 + 1
+    if year > date.max.year:  # e.g. a 9999-10-01 typo: no due date can be later than this
+        return date.max
     return date(year, month, min(day.day, calendar.monthrange(year, month)[1]))
