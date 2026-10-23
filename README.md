@@ -38,6 +38,8 @@ History is shared with CSV imports, so the same accounts match across both forma
 
 ### Run on Windows
 
+Double-click `start.bat` (needs Python 3.10+ installed; sets up `.venv` on first start, then opens the browser). Or by hand:
+
 ```
 py -3 -m venv .venv
 .venv\Scripts\pip install -r requirements.txt
