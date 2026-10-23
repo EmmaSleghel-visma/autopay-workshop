@@ -36,11 +36,12 @@ class CsvImporter:
             return result
         reader.fieldnames = header
 
-        for line, row in enumerate(reader, start=2):
+        for row in reader:
             try:
                 result.transactions.append(self._parse_row(row))
             except ValueError as exc:
-                result.errors.append(RowError(line, str(exc)))
+                # line_num is the physical line, so skipped blank lines still count
+                result.errors.append(RowError(reader.line_num, str(exc)))
         return result
 
     def _parse_row(self, row: dict[str, str | None]) -> Transaction:
