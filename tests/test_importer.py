@@ -94,3 +94,11 @@ def test_error_line_numbers_count_blank_lines():
     result = parse(HEADER + "t1,1,2,5.00,NOK,2026-11-30,\n\nt2,1,2,abc,NOK,2026-11-30,\n")
     assert [t.transaction_id for t in result.transactions] == ["t1"]
     assert [e.line for e in result.errors] == [4]
+
+
+def test_oversized_field_rejects_only_that_row():
+    huge = "x" * 200_000
+    result = parse(HEADER + f"t1,1,2,5.00,NOK,2026-11-30,\nt2,{huge},2,5.00,NOK,2026-11-30,\nt3,1,2,5.00,NOK,2026-11-30,\n")
+    assert [t.transaction_id for t in result.transactions] == ["t1", "t3"]
+    assert [e.line for e in result.errors] == [3]
+    assert "could not be read" in result.errors[0].message

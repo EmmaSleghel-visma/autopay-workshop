@@ -36,7 +36,15 @@ class CsvImporter:
             return result
         reader.fieldnames = header
 
-        for row in reader:
+        while True:
+            try:
+                row = next(reader)
+            except StopIteration:
+                break
+            except csv.Error as exc:  # e.g. a field over the csv module's size limit
+                # the failing line is not counted in line_num yet
+                result.errors.append(RowError(reader.line_num + 1, f"row could not be read: {exc}"))
+                continue
             try:
                 result.transactions.append(self._parse_row(row))
             except ValueError as exc:
