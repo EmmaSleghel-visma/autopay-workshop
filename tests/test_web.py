@@ -1,4 +1,5 @@
 import io
+import re
 from pathlib import Path
 
 from fraud_detection.web import create_app
@@ -79,3 +80,59 @@ def test_transactions_page_lists_every_transaction_with_its_flags(tmp_path):
     assert "t1" in html and "t2" in html
     assert "HIGH_AMOUNT" in html
     assert html.count('class="flagged"') == 1
+
+
+def many_rows(n):
+    return HEADER + "".join(f"t{i},D1,C1,5.00,NOK,2026-11-15,2026-10-20\n" for i in range(1, n + 1))
+
+
+def ids_on(html):
+    return set(re.findall(r"<td>(t\d+)</td>", html))
+
+
+def test_transactions_are_paged_newest_first(tmp_path):
+    c = client(tmp_path)
+    upload(c, many_rows(105).encode(), "many.csv")
+
+    first = c.get("/transactions").get_data(as_text=True)
+    assert ids_on(first) == {f"t{i}" for i in range(6, 106)}
+    assert first.index("<td>t105</td>") < first.index("<td>t6</td>")
+    assert "Showing 1–100 of 105" in first
+    assert 'href="/transactions?page=2"' in first and "page=0" not in first
+
+    second = c.get("/transactions?page=2").get_data(as_text=True)
+    assert ids_on(second) == {f"t{i}" for i in range(1, 6)}
+    assert "Showing 101–105 of 105" in second
+    assert 'href="/transactions?page=1"' in second and "page=3" not in second
+
+
+def test_out_of_range_or_invalid_page_numbers_are_clamped(tmp_path):
+    c = client(tmp_path)
+    upload(c, many_rows(105).encode(), "many.csv")
+    assert "Showing 101–105 of 105" in c.get("/transactions?page=99").get_data(as_text=True)
+    assert "Showing 1–100 of 105" in c.get("/transactions?page=abc").get_data(as_text=True)
+    assert "Showing 1–100 of 105" in c.get("/transactions?page=-3").get_data(as_text=True)
+
+
+def test_flags_are_explained_in_plain_language(tmp_path):
+    c = client(tmp_path)
+    csv = (
+        HEADER
+        + "a,D1,C1,20000.00,SEK,2026-11-15,2026-10-20\n"
+        + "b,D1,C2,5.00,NOK,2027-03-01,2026-10-20\n"
+        + "c,D2,C1,5.00,USD,2026-10-01,2026-10-20\n"
+    )
+    upload(c, csv.encode(), "reasons.csv")
+    html = c.get("/transactions").get_data(as_text=True)
+    assert "Amount above SEK 10 000" in html
+    assert "First payment from this debtor to this creditor" in html
+    assert "Due date more than 3 months after the created date" in html
+    assert "Due date before the created date" in html
+    assert "Currency USD is not supported (only NOK, SEK and EUR)" in html
+    assert "HIGH_AMOUNT" in html  # the code stays visible next to the explanation
+
+
+def test_reasons_refer_to_the_import_date_when_there_is_no_created_date(tmp_path):
+    c = client(tmp_path)
+    upload(c, (HEADER + "a,D1,C1,5.00,NOK,2000-01-01,\n").encode(), "old.csv")
+    assert "Due date before the import date" in c.get("/transactions").get_data(as_text=True)

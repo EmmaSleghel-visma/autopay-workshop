@@ -96,26 +96,21 @@ class TransactionStore:
 
     def all(self) -> list[StoredTransaction]:
         with self._lock:  # don't read a half-finished import through the shared connection
+            rows = self._conn.execute(f"{SELECT_STORED} ORDER BY seq").fetchall()
+        return [_stored(r) for r in rows]
+
+    def count(self) -> int:
+        with self._lock:
+            row = self._conn.execute("SELECT COUNT(*) FROM transactions").fetchone()
+        return row[0]
+
+    def page(self, offset: int, limit: int) -> list[StoredTransaction]:
+        """Newest first: `limit` transactions after skipping the `offset` most recent ones."""
+        with self._lock:
             rows = self._conn.execute(
-                "SELECT transaction_id, debtor_account, creditor_account, amount, currency,"
-                " due_date, created_date, import_date, flags FROM transactions ORDER BY seq"
+                f"{SELECT_STORED} ORDER BY seq DESC LIMIT ? OFFSET ?", (limit, offset)
             ).fetchall()
-        return [
-            StoredTransaction(
-                transaction=Transaction(
-                    transaction_id=r[0],
-                    debtor_account=r[1],
-                    creditor_account=r[2],
-                    amount=Decimal(r[3]),
-                    currency=r[4],
-                    due_date=date.fromisoformat(r[5]),
-                    created_date=date.fromisoformat(r[6]) if r[6] else None,
-                ),
-                import_date=date.fromisoformat(r[7]),
-                flags=tuple(json.loads(r[8])),
-            )
-            for r in rows
-        ]
+        return [_stored(r) for r in rows]
 
     # History protocol
 
@@ -131,3 +126,25 @@ class TransactionStore:
             (debtor_account, creditor_account),
         ).fetchone()
         return row is not None
+
+
+SELECT_STORED = (
+    "SELECT transaction_id, debtor_account, creditor_account, amount, currency,"
+    " due_date, created_date, import_date, flags FROM transactions"
+)
+
+
+def _stored(r) -> StoredTransaction:
+    return StoredTransaction(
+        transaction=Transaction(
+            transaction_id=r[0],
+            debtor_account=r[1],
+            creditor_account=r[2],
+            amount=Decimal(r[3]),
+            currency=r[4],
+            due_date=date.fromisoformat(r[5]),
+            created_date=date.fromisoformat(r[6]) if r[6] else None,
+        ),
+        import_date=date.fromisoformat(r[7]),
+        flags=tuple(json.loads(r[8])),
+    )
