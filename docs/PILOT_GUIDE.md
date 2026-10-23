@@ -17,6 +17,12 @@ Your browser then opens **http://127.0.0.1:5000**. If the page does not load at 
 Keep the black window open while you use the app; close it to stop the app.
 The window shows a "development server" warning - that is expected for this pilot and safe to ignore.
 
+If the black window shows a message instead:
+- **"Setup failed"** - check your internet connection and double-click `start.bat` again; setup restarts by itself.
+- **"The app could not start. Another program may be using port 5000"** - close that program (or restart the PC) and start again.
+- **"The app seems to be already running"** - another black window is still open; use that one, or close it first.
+- **"Python 3.10 or newer was not found"** - install Python (step 1 above), then start again.
+
 ## 3. Import a file
 
 On the start page, choose your file and click **Import**. The file name must end in `.csv` or `.xml`.

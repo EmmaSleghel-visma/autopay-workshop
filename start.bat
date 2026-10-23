@@ -25,6 +25,9 @@ if not exist ".venv\setup-ok.txt" set "NEED_SETUP=1"
 if not exist ".venv\Scripts\python.exe" set "NEED_SETUP=1"
 if defined NEED_SETUP (
     echo Setting up the app. This takes 1-2 minutes and needs internet...
+    rem A running app locks its python.exe: probe that first, so we never half-delete a running install.
+    if exist ".venv\Scripts\python.exe" del ".venv\Scripts\python.exe" 2>nul
+    if exist ".venv\Scripts\python.exe" goto :running
     if exist ".venv" rmdir /s /q ".venv"
     if exist ".venv" goto :running
     %PY% -m venv .venv || goto :error
