@@ -18,4 +18,15 @@
 | 13 | T011 | amount `abc` | rejected, error on line 13 |
 | 14 | T012 | due date not YYYY-MM-DD | rejected, error on line 14 |
 
-Totals: 10 imported, 2 errors, 1 duplicate. Flags appear once the rules engine (`fraud_detection/rules.py`) is implemented.
+Totals: 10 imported, 2 errors, 1 duplicate.
+
+## pain001_v03.xml
+
+Synthetic pain.001.001.03 file from QA (razvan-agent), modelled on the pilot customer's export. Expected on an empty database, imported 2026-10-23:
+
+| ID | Expected flags |
+|---|---|
+| E2E-0001 | none (debtor's first transaction) |
+| E2E-0002 | HIGH_AMOUNT, NEW_CREDITOR |
+| E2E-0003 | NEW_CREDITOR, UNSUPPORTED_CURRENCY |
+| E2E-0004 | FAR_FUTURE_DUE (second PmtInf block, due 2027-03-01) |
