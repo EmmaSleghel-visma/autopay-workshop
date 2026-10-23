@@ -1,0 +1,2 @@
+amount,transaction_id,currency,debtor_account,creditor_account,due_date,created_date
+100.00,T-FILE-01,NOK,1234.56.78901,9000.11.00001,2026-10-15,2026-10-01
