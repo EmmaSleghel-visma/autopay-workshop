@@ -4,7 +4,7 @@ Usage: python check.py actual.json
 
 actual.json shape (produce it from the build however is easiest):
   {"transactions": [{"transaction_id": "T-R1-02", "flags": ["..."]}, ...],
-   "summaries": {"all_rules.csv": {"imported": 31, "flagged": 12, "duplicates": 1, "errors": 0}}}
+   "summaries": {"all_rules.csv": {"imported": 71, "flagged": 35, "duplicates": 1, "errors": 0}}}
 Both keys are optional, so step 1 (rules engine only) can send just transactions.
 Flag codes are the app's own (HIGH_AMOUNT, NEW_CREDITOR, ...); FLAG_ALIASES maps other spellings.
 """

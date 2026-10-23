@@ -104,12 +104,31 @@ IMPORT1 = [
     (row("T-MIX-01", D_R2, "9000.11.00099", "50000.00", "2027-06-01", "2026-10-01"), [R1, R2, R3], "MIX-01", POS, "all three rules on one txn"),
     (row("T-MIX-02", D_BASE, C_A, "20000.00", "2027-06-01", "2026-10-01"), [R1, R3], "MIX-02", POS, "two rules on one txn"),
 
-    # Currency
-    (row("T-CUR-01", D_BASE, C_A, "100.00", "2026-10-15", currency="EUR"), [CUR], "CUR-01", NEG, "non-NOK"),
-    (row("T-CUR-02", D_BASE, C_A, "50000.00", "2026-10-15", currency="SEK"), [CUR, R1], "CUR-02", NEG, "non-NOK over limit: other rules still apply (PO)"),
-    (row("T-CUR-05", D_POS, C_C, "100.00", "2027-06-01", currency="EUR"), [CUR, R2, R3], "CUR-05", NEG, "non-NOK + new creditor + far due: all flags (PO)"),
+    # Currency: HIGH_AMOUNT limit per currency, no conversion (PO 2026-10-23 10:20): NOK 10000, SEK 10000, EUR 1000
+    (row("T-CUR-01", D_BASE, C_A, "100.00", "2026-10-15", currency="EUR"), [], "CUR-01", NEG, "EUR is supported, 100 under the EUR limit: no flags"),
+    (row("T-CUR-02", D_BASE, C_A, "50000.00", "2026-10-15", currency="SEK"), [R1], "CUR-02", POS, "SEK over the SEK limit: HIGH_AMOUNT only"),
+    (row("T-CUR-05", D_POS, C_C, "100.00", "2027-06-01", currency="EUR"), [R2, R3], "CUR-05", POS, "EUR 100 + new creditor + far due: no HIGH_AMOUNT, no currency flag"),
     (row("T-CUR-03", D_BASE, C_A, "100.00", "2026-10-15", currency="nok"), [], "CUR-03", CORNER, "lowercase nok accepted as NOK (confirm)"),
     (row("T-CUR-04", D_BASE, C_A, "100.00", "2026-10-15", currency=" NOK "), [], "CUR-04", CORNER, "padded NOK accepted (confirm)"),
+    (row("T-CUR-06", D_BASE, C_A, "10000.00", "2026-10-15", currency="SEK"), [], "CUR-06", CORNER, "SEK exactly at the limit is not flagged"),
+    (row("T-CUR-07", D_BASE, C_A, "10000.01", "2026-10-15", currency="SEK"), [R1], "CUR-07", CORNER, "SEK one ore over the limit"),
+    (row("T-CUR-08", D_BASE, C_A, "9999.99", "2026-10-15", currency="SEK"), [], "CUR-08", CORNER, "SEK one ore under the limit"),
+    (row("T-CUR-09", D_BASE, C_A, "1000.00", "2026-10-15", currency="EUR"), [], "CUR-09", CORNER, "EUR exactly at the EUR limit is not flagged"),
+    (row("T-CUR-10", D_BASE, C_A, "1000.01", "2026-10-15", currency="EUR"), [R1], "CUR-10", CORNER, "EUR one cent over the EUR limit"),
+    (row("T-CUR-11", D_BASE, C_A, "999.99", "2026-10-15", currency="EUR"), [], "CUR-11", CORNER, "EUR one cent under the EUR limit"),
+    (row("T-CUR-12", D_BASE, C_A, "1500.00", "2026-10-15", currency="EUR"), [R1], "CUR-12", POS, "EUR 1500 is high, the same amount in NOK is not (no conversion)"),
+    (row("T-CUR-13", D_BASE, C_A, "1500.00", "2026-10-15"), [], "CUR-13", NEG, "NOK 1500 control for CUR-12: no flags"),
+    (row("T-CUR-14", D_BASE, C_A, "5000.00", "2026-10-15", currency="EUR"), [R1], "CUR-14", POS, "EUR 5000: high in EUR, under the NOK/SEK limit"),
+    (row("T-CUR-15", D_BASE, C_A, "50000.00", "2026-10-15", currency="sek"), [R1], "CUR-15", CORNER, "lowercase sek upper-cased on import: SEK limit applies"),
+    (row("T-CUR-16", D_BASE, C_A, "1000.01", "2026-10-15", currency=" eur "), [R1], "CUR-16", CORNER, "padded lowercase eur trimmed and upper-cased: EUR limit applies"),
+    (row("T-CUR-17", D_BASE, C_A, "50000.00", "2026-10-15", currency="USD"), [CUR], "CUR-17", NEG, "USD over every limit: UNSUPPORTED_CURRENCY only, no HIGH_AMOUNT"),
+    (row("T-CUR-18", D_BASE, C_A, "100.00", "2026-10-15", currency="GBP"), [CUR], "CUR-18", NEG, "GBP: unsupported"),
+    (row("T-CUR-19", D_BASE, C_A, "50000.00", "2026-10-15", currency="DKK"), [CUR], "CUR-19", NEG, "DKK (Nordic neighbour) over 10000: still unsupported, no HIGH_AMOUNT"),
+    (row("T-CUR-20", D_BASE, C_A, "5000.00", "2026-10-15", currency="EURO"), [CUR], "CUR-20", NEG, "EURO is not the code EUR: importer keeps it, UNSUPPORTED_CURRENCY, no HIGH_AMOUNT"),
+    (row("T-CUR-21", D_BASE, C_A, "5000.00", "2026-10-15", currency="€"), [CUR], "CUR-21", NEG, "euro sign is not a code: importer keeps it, UNSUPPORTED_CURRENCY, no HIGH_AMOUNT"),
+    (row("T-CUR-22", D_BASE, C_A, "5000.00", "2026-10-15", currency="NOKK"), [CUR], "CUR-22", NEG, "NOKK typo: unsupported, not matched to NOK"),
+    (row("T-CUR-23", D_POS, "9000.11.00007", "50000.00", "2027-06-01", currency="USD"), [CUR, R2, R3], "CUR-23", NEG, "USD + new creditor + far due: other rules still apply, no HIGH_AMOUNT"),
+    (row("T-CUR-24", D_BASE, C_A, "100.00", "2026-09-01", currency="USD"), [CUR, PAST], "CUR-24", NEG, "USD due before created date: PAST_DUE_DATE still applies"),
 
     # Cross-import R2 seed
     (row("T-X-01", D_CROSS, C_A, "100.00", "2026-10-15"), [], "XIMP-01", POS, "debtor first seen in import 1"),
@@ -145,6 +164,7 @@ ERRORS = [
     (["T-ERR-13", D_BASE, C_A, "100.00", "NOK", "2026-10-15"], "ERROR", "ERR-13", NEG, "row with fewer values than the header: rejected (PO 10:08)"),
     (["T-ERR-14", D_BASE, C_A, "100.00", "NOK", "2026-10-15", "2026-10-01", "extra"], "ERROR", "ERR-14", NEG, "row with more values than the header: rejected (PO 10:08)"),
     (["T-ERR-15", D_BASE, C_A, "   ", "NOK", "2026-10-15", "2026-10-01"], "ERROR", "ERR-15", NEG, "whitespace-only amount"),
+    (["T-ERR-16", D_BASE, C_A, "100.00", "   ", "2026-10-15", "2026-10-01"], "ERROR", "ERR-16", NEG, "whitespace-only currency: trimmed to empty, rejected like a missing one"),
     (["T-OK-01", D_BASE, C_A, "100.00", "NOK", "2026-10-15", "2026-10-01"], [], "ERR-OK", POS, "valid row among bad ones is still imported"),
 ]
 

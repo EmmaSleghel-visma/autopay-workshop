@@ -4,6 +4,7 @@ import calendar
 from datetime import date
 from decimal import Decimal
 
+LIMITS = {"NOK": Decimal("10000.00"), "SEK": Decimal("10000.00"), "EUR": Decimal("1000.00")}
 ALL_CODES = ("HIGH_AMOUNT", "NEW_CREDITOR", "FAR_FUTURE_DUE", "PAST_DUE_DATE", "UNSUPPORTED_CURRENCY")
 
 
@@ -42,7 +43,8 @@ def expected_flags(debtor, creditor, amount, currency, due_date, created_date, i
     debtor = clean_account(debtor)
     creditor = clean_account(creditor)
     flags = set()
-    if Decimal(amount) > Decimal("10000.00"):
+    code = currency.strip().upper()
+    if code in LIMITS and Decimal(amount) > LIMITS[code]:
         flags.add("HIGH_AMOUNT")
     if debtor in history.debtors and (debtor, creditor) not in history.pairs:
         flags.add("NEW_CREDITOR")
@@ -51,7 +53,7 @@ def expected_flags(debtor, creditor, amount, currency, due_date, created_date, i
         flags.add("FAR_FUTURE_DUE")
     if due_date < start:
         flags.add("PAST_DUE_DATE")
-    if currency.upper() != "NOK":
+    if code not in LIMITS:
         flags.add("UNSUPPORTED_CURRENCY")
     return sorted(flags)
 

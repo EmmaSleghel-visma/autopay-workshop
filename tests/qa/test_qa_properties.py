@@ -16,7 +16,7 @@ from fraud_detection.importer import CsvImporter
 from fraud_detection.models import Transaction, normalize_account
 from fraud_detection.service import import_transactions
 from fraud_detection.storage import TransactionStore
-from oracle import clean_account, replay, three_months_later
+from oracle import LIMITS, clean_account, replay, three_months_later
 from qa_support import IMPORT_DATE
 
 FAST = settings(max_examples=250, deadline=None, derandomize=True)
@@ -25,7 +25,8 @@ DIFFERENTIAL = settings(max_examples=200, deadline=None, derandomize=True,
 
 DEBTORS = ["12345678903", "98765432109", "15030012345"]
 CREDITORS = ["11112222333", "44445555666", "77778888999"]
-FOREIGN = ["EUR", "SEK", "USD", "DKK", "NOKK", "NO"]
+SUPPORTED = ["NOK", "SEK", "EUR"]
+FOREIGN = ["USD", "DKK", "GBP", "NOKK", "NO", "EURO", "€"]
 MONTH_ENDS = [
     date(2024, 1, 31), date(2024, 2, 29), date(2023, 11, 30), date(2023, 11, 29),
     date(2023, 12, 31), date(2025, 11, 30), date(2027, 11, 30), date(2027, 11, 29),
@@ -34,14 +35,15 @@ MONTH_ENDS = [
 ]
 
 amounts = st.one_of(
-    st.sampled_from([Decimal("10000.00"), Decimal("10000.01"), Decimal("9999.99"), Decimal("0.01")]),
+    st.sampled_from([Decimal("10000.00"), Decimal("10000.01"), Decimal("9999.99"), Decimal("1000.00"),
+                     Decimal("1000.01"), Decimal("999.99"), Decimal("0.01")]),
     st.integers(min_value=1, max_value=2_000_000).map(lambda c: Decimal(c) / 100),
 )
 start_dates = st.one_of(
     st.sampled_from(MONTH_ENDS),
     st.dates(min_value=date(2023, 10, 1), max_value=date(2028, 3, 31)),
 )
-currencies = st.one_of(st.just("NOK"), st.sampled_from(FOREIGN))
+currencies = st.one_of(st.sampled_from(SUPPORTED), st.sampled_from(FOREIGN))
 
 
 class FakeHistory:
@@ -95,9 +97,29 @@ def formatted(draw, account):
 
 @FAST
 @given(transactions(), histories)
-def test_high_amount_iff_amount_above_limit(tx, history):
+def test_high_amount_iff_amount_above_currency_limit(tx, history):
     flagged = rules.HIGH_AMOUNT in rules.evaluate(tx, history, IMPORT_DATE)
-    assert flagged == (tx.amount > Decimal("10000.00")), f"amount={tx.amount}"
+    expected = tx.currency in LIMITS and tx.amount > LIMITS[tx.currency]
+    assert flagged == expected, f"currency={tx.currency} amount={tx.amount}"
+
+
+@FAST
+@given(transactions(), histories, st.sampled_from(FOREIGN))
+def test_unsupported_currency_never_high_amount_always_flagged(tx, history, foreign):
+    got = rules.evaluate(replace(tx, currency=foreign), history, IMPORT_DATE)
+    assert rules.UNSUPPORTED_CURRENCY in got, f"currency={foreign} got={got}"
+    assert rules.HIGH_AMOUNT not in got, f"currency={foreign} amount={tx.amount} got={got}"
+
+
+@FAST
+@given(transactions(), histories, st.sampled_from(SUPPORTED))
+def test_supported_currency_never_unsupported(tx, history, supported):
+    got = rules.evaluate(replace(tx, currency=supported), history, IMPORT_DATE)
+    assert rules.UNSUPPORTED_CURRENCY not in got, f"currency={supported} got={got}"
+
+
+def test_rules_limits_match_product_owner_decision():
+    assert rules.HIGH_AMOUNT_LIMITS == LIMITS
 
 
 @FAST
@@ -133,12 +155,15 @@ def test_flags_independent_of_account_formatting(data, tx, history):
 
 @FAST
 @given(transactions(), histories, st.sampled_from(FOREIGN))
-def test_foreign_currency_adds_only_unsupported_currency(tx, history, foreign):
-    nok = rules.evaluate(replace(tx, currency="NOK"), history, IMPORT_DATE)
-    other = rules.evaluate(replace(tx, currency=foreign), history, IMPORT_DATE)
-    assert rules.UNSUPPORTED_CURRENCY not in nok
-    assert rules.UNSUPPORTED_CURRENCY in other
-    assert sorted(set(other) - {rules.UNSUPPORTED_CURRENCY}) == sorted(nok)
+def test_other_flags_independent_of_currency(tx, history, foreign):
+    amount_and_currency = {rules.HIGH_AMOUNT, rules.UNSUPPORTED_CURRENCY}
+    base = set(rules.evaluate(replace(tx, currency=foreign), history, IMPORT_DATE)) - amount_and_currency
+    failures = []
+    for code in SUPPORTED + FOREIGN:
+        other = set(rules.evaluate(replace(tx, currency=code), history, IMPORT_DATE)) - amount_and_currency
+        if other != base:
+            failures.append(f"{code}: {sorted(other)} vs {foreign}: {sorted(base)}")
+    assert not failures, "\n".join(failures)
 
 
 @FAST
@@ -199,7 +224,7 @@ def csv_rows(draw):
             "debtor_account": draw(formatted(draw(st.sampled_from(DEBTORS[:2])))),
             "creditor_account": draw(formatted(draw(st.sampled_from(CREDITORS[:2])))),
             "amount": draw(amounts).quantize(Decimal("0.01")),
-            "currency": draw(st.one_of(st.sampled_from(["NOK", "nok"]), st.sampled_from(FOREIGN))),
+            "currency": draw(st.one_of(st.sampled_from(["NOK", "nok", "SEK", "sek", "EUR", "eur"]), st.sampled_from(FOREIGN))),
             "due_date": draw(due_for(start)),
             "created_date": created,
         })

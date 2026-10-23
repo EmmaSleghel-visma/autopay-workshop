@@ -1,4 +1,4 @@
-"""Decision table: every combination of the five rule conditions checked against rules.evaluate."""
+"""Decision table: currency x amount at/over its limit x creditor x due state, checked against rules.evaluate."""
 
 import itertools
 from datetime import date
@@ -30,24 +30,29 @@ class TableHistory:
         return (debtor_account, creditor_account) in self.pairs
 
 
-def build_case(high, new_creditor, due_state, foreign, created):
+AT_LIMIT = {"NOK": Decimal("10000.00"), "SEK": Decimal("10000.00"), "EUR": Decimal("1000.00"), "USD": Decimal("10000.00")}
+CURRENCIES = list(AT_LIMIT)
+OVER = Decimal("0.01")
+
+
+def build_case(over_limit, new_creditor, due_state, currency, created):
     tx = Transaction(
         transaction_id="DT",
         debtor_account=DEBTOR,
         creditor_account=NEW_CREDITOR if new_creditor else KNOWN_CREDITOR,
-        amount=Decimal("10000.01") if high else Decimal("10000.00"),
-        currency="EUR" if foreign else "NOK",
+        amount=AT_LIMIT[currency] + OVER if over_limit else AT_LIMIT[currency],
+        currency=currency,
         due_date=DUE_BY_STATE[due_state],
         created_date=created,
     )
     expected = set()
-    if high:
+    if over_limit and currency != "USD":
         expected.add(rules.HIGH_AMOUNT)
     if new_creditor:
         expected.add(rules.NEW_CREDITOR)
     if due_state != "neither":
         expected.add(due_state)
-    if foreign:
+    if currency == "USD":
         expected.add(rules.UNSUPPORTED_CURRENCY)
     return tx, expected
 
@@ -55,39 +60,39 @@ def build_case(high, new_creditor, due_state, foreign, created):
 def check_table(created, import_date):
     history = TableHistory({(DEBTOR, KNOWN_CREDITOR)})
     failures = []
-    combos = list(itertools.product([False, True], [False, True], list(DUE_BY_STATE), [False, True]))
-    for high, new_creditor, due_state, foreign in combos:
-        tx, expected = build_case(high, new_creditor, due_state, foreign, created)
+    combos = list(itertools.product([False, True], [False, True], list(DUE_BY_STATE), CURRENCIES))
+    for over_limit, new_creditor, due_state, currency in combos:
+        tx, expected = build_case(over_limit, new_creditor, due_state, currency, created)
         got = rules.evaluate(tx, history, import_date)
         missing = sorted(expected - set(got))
         extra = sorted(set(got) - expected)
         duplicated = len(got) != len(set(got))
         if missing or extra or duplicated:
-            label = (f"high={high} new_creditor={new_creditor} due={due_state} "
-                     f"currency={tx.currency} created={created}")
+            label = (f"amount={tx.amount} new_creditor={new_creditor} due={due_state} "
+                     f"currency={currency} created={created}")
             failures.append(f"{label}: missing {missing}, extra {extra}, got {got}")
     return combos, failures
 
 
 def test_every_combination_with_created_date():
     combos, failures = check_table(CREATED, IMPORT_DATE)
-    assert len(combos) == 24
+    assert len(combos) == 48
     assert not failures, "\n".join(failures)
 
 
 def test_every_combination_falls_back_to_import_date():
     combos, failures = check_table(None, CREATED)
-    assert len(combos) == 24
+    assert len(combos) == 48
     assert not failures, "\n".join(failures)
 
 
 def test_first_transaction_of_debtor_never_new_creditor_in_any_combination():
     failures = []
-    for high, due_state, foreign in itertools.product([False, True], list(DUE_BY_STATE), [False, True]):
-        tx, expected = build_case(high, True, due_state, foreign, CREATED)
+    for over_limit, due_state, currency in itertools.product([False, True], list(DUE_BY_STATE), CURRENCIES):
+        tx, expected = build_case(over_limit, True, due_state, currency, CREATED)
         expected.discard(rules.NEW_CREDITOR)
         got = rules.evaluate(tx, TableHistory(set()), IMPORT_DATE)
         if set(got) != expected:
-            failures.append(f"high={high} due={due_state} currency={tx.currency}: "
+            failures.append(f"amount={tx.amount} due={due_state} currency={currency}: "
                             f"expected {sorted(expected)}, got {got}")
     assert not failures, "\n".join(failures)

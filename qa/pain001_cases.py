@@ -71,7 +71,7 @@ def t(case, cat, e2e, creditor, amount, expect, note, ccy="NOK", instr="", amt_x
              "flags": sorted(expect) if isinstance(expect, list) else [], "note": note}
     if status == ERR:
         entry["error_contains"] = error or [tid]
-    meta = {"creditor": norm(creditor) if creditor else None, "amount": amount.strip() if amount else None, "currency": ccy}
+    meta = {"creditor": norm(creditor) if creditor else None, "amount": amount.strip() if amount else None, "currency": ccy.strip().upper()}
     return {"xml": xml, "entry": entry, "meta": meta}
 
 
@@ -194,12 +194,26 @@ P08 = ("09", CRE, [
 
 P09 = ("09", CRE, [
     pmt("P09-A", D10, "2026-10-15", [
-        t("CUR-01", NEG, "CUR-E2E-01", C_A, "100.00", [CUR], "EUR, debtor's first txn", ccy="EUR"),
-        t("CUR-02", NEG, "CUR-E2E-02", C_A, "50000.00", [CUR, R1], "SEK over limit: other rules still apply (PO)", ccy="SEK"),
+        t("CUR-01", NEG, "CUR-E2E-01", C_A, "100.00", [], "EUR under the EUR limit, debtor's first txn: no flags", ccy="EUR"),
+        t("CUR-02", POS, "CUR-E2E-02", C_A, "50000.00", [R1], "SEK over the SEK limit: HIGH_AMOUNT only", ccy="SEK"),
         t("CUR-03", NEG, "CUR-E2E-03", C_A, "100.00", [], "NOK control: no currency flag"),
+        t("CUR-05", CORNER, "CUR-E2E-05", C_A, "10000.00", [], "SEK exactly at the limit is not flagged", ccy="SEK"),
+        t("CUR-06", CORNER, "CUR-E2E-06", C_A, "10000.01", [R1], "SEK one ore over the limit", ccy="SEK"),
+        t("CUR-07", CORNER, "CUR-E2E-07", C_A, "1000.00", [], "EUR exactly at the EUR limit is not flagged", ccy="EUR"),
+        t("CUR-08", CORNER, "CUR-E2E-08", C_A, "1000.01", [R1], "EUR one cent over the EUR limit", ccy="EUR"),
+        t("CUR-09", CORNER, "CUR-E2E-09", C_A, "999.99", [], "EUR one cent under the EUR limit", ccy="EUR"),
+        t("CUR-10", CORNER, "CUR-E2E-10", C_A, "1000.001", [R1], "EUR three decimals, just over the EUR limit", ccy="EUR"),
+        t("CUR-11", POS, "CUR-E2E-11", C_A, "1500.00", [R1], "EUR 1500 is high, the same amount in NOK is not (no conversion)", ccy="EUR"),
+        t("CUR-12", NEG, "CUR-E2E-12", C_A, "1500.00", [], "NOK 1500 control for CUR-11: no flags"),
+        t("CUR-13", CORNER, "CUR-E2E-13", C_A, "50000.00", [R1], "Ccy=\"sek\" upper-cased on import: SEK limit applies", ccy="sek"),
+        t("CUR-14", NEG, "CUR-E2E-14", C_A, "50000.00", [CUR], "USD over every limit: UNSUPPORTED_CURRENCY only, no HIGH_AMOUNT", ccy="USD"),
+        t("CUR-15", NEG, "CUR-E2E-15", C_A, "50000.00", [CUR], "DKK (Nordic neighbour): unsupported, no HIGH_AMOUNT", ccy="DKK"),
+        t("CUR-16", NEG, "CUR-E2E-16", C_A, "100.00", [CUR], "GBP: unsupported", ccy="GBP"),
+        t("CUR-17", NEG, "CUR-E2E-17", C_A, "5000.00", [CUR], "Ccy=\"EURO\" is not EUR: imported as unsupported, no HIGH_AMOUNT", ccy="EURO"),
     ]),
     pmt("P09-B", D10, "2027-06-01", [
-        t("CUR-04", POS, "CUR-E2E-04", C_B, "20000.00", [CUR, R1, R2, R3], "EUR + high + new creditor + far due: every flag", ccy="EUR"),
+        t("CUR-04", POS, "CUR-E2E-04", C_B, "20000.00", [R1, R2, R3], "EUR high + new creditor + far due: no currency flag", ccy="EUR"),
+        t("CUR-18", NEG, "CUR-E2E-18", C_C, "50000.00", [CUR, R2, R3], "USD + new creditor + far due: other rules still apply, no HIGH_AMOUNT", ccy="USD"),
     ]),
 ])
 
@@ -262,7 +276,7 @@ TX_FILES = [
     ("p06_r3_v09.xml", "FILE-P06", CORNER, "FAR_FUTURE_DUE exactly 3 months, .09 Dt and DtTm", P06),
     ("p07_past_due_v03.xml", "FILE-P07", NEG, "due date before CreDtTm, .03", P07),
     ("p08_past_due_v09.xml", "FILE-P08", NEG, "due date before CreDtTm, .09", P08),
-    ("p09_currency.xml", "FILE-P09", NEG, "non-NOK currencies, other rules still apply", P09),
+    ("p09_currency.xml", "FILE-P09", NEG, "per-currency HIGH_AMOUNT limits (NOK/SEK 10000, EUR 1000) and unsupported currencies", P09),
     ("p10_accounts.xml", "FILE-P10", CORNER, "IBAN vs Othr, BBAN with and without dots", P10),
     ("p11_row_errors.xml", "FILE-P11", NEG, "per-transaction errors, valid txns still imported", P11),
     ("p12_ids.xml", "FILE-P12", CORNER, "NOTPROVIDED / InstrId fallback and duplicates in one file", P12),

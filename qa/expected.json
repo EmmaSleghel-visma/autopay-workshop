@@ -6,8 +6,8 @@
   ],
   "summaries": {
     "all_rules.csv": {
-      "imported": 52,
-      "flagged": 22,
+      "imported": 71,
+      "flagged": 35,
       "duplicates": 1,
       "errors": 0
     },
@@ -21,7 +21,7 @@
       "imported": 1,
       "flagged": 0,
       "duplicates": 0,
-      "errors": 15
+      "errors": 16
     }
   },
   "transactions": [
@@ -468,35 +468,31 @@
       "category": "NEG",
       "transaction_id": "T-CUR-01",
       "status": "IMPORTED",
-      "flags": [
-        "UNSUPPORTED_CURRENCY"
-      ],
-      "note": "non-NOK"
+      "flags": [],
+      "note": "EUR is supported, 100 under the EUR limit: no flags"
     },
     {
       "file": "all_rules.csv",
       "case": "CUR-02",
-      "category": "NEG",
+      "category": "POS",
       "transaction_id": "T-CUR-02",
       "status": "IMPORTED",
       "flags": [
-        "HIGH_AMOUNT",
-        "UNSUPPORTED_CURRENCY"
+        "HIGH_AMOUNT"
       ],
-      "note": "non-NOK over limit: other rules still apply (PO)"
+      "note": "SEK over the SEK limit: HIGH_AMOUNT only"
     },
     {
       "file": "all_rules.csv",
       "case": "CUR-05",
-      "category": "NEG",
+      "category": "POS",
       "transaction_id": "T-CUR-05",
       "status": "IMPORTED",
       "flags": [
         "FAR_FUTURE_DUE",
-        "NEW_CREDITOR",
-        "UNSUPPORTED_CURRENCY"
+        "NEW_CREDITOR"
       ],
-      "note": "non-NOK + new creditor + far due: all flags (PO)"
+      "note": "EUR 100 + new creditor + far due: no HIGH_AMOUNT, no currency flag"
     },
     {
       "file": "all_rules.csv",
@@ -515,6 +511,208 @@
       "status": "IMPORTED",
       "flags": [],
       "note": "padded NOK accepted (confirm)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-06",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-06",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "SEK exactly at the limit is not flagged"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-07",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-07",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "SEK one ore over the limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-08",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-08",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "SEK one ore under the limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-09",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-09",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "EUR exactly at the EUR limit is not flagged"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-10",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-10",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "EUR one cent over the EUR limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-11",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-11",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "EUR one cent under the EUR limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-12",
+      "category": "POS",
+      "transaction_id": "T-CUR-12",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "EUR 1500 is high, the same amount in NOK is not (no conversion)"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-13",
+      "category": "NEG",
+      "transaction_id": "T-CUR-13",
+      "status": "IMPORTED",
+      "flags": [],
+      "note": "NOK 1500 control for CUR-12: no flags"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-14",
+      "category": "POS",
+      "transaction_id": "T-CUR-14",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "EUR 5000: high in EUR, under the NOK/SEK limit"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-15",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-15",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "lowercase sek upper-cased on import: SEK limit applies"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-16",
+      "category": "CORNER",
+      "transaction_id": "T-CUR-16",
+      "status": "IMPORTED",
+      "flags": [
+        "HIGH_AMOUNT"
+      ],
+      "note": "padded lowercase eur trimmed and upper-cased: EUR limit applies"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-17",
+      "category": "NEG",
+      "transaction_id": "T-CUR-17",
+      "status": "IMPORTED",
+      "flags": [
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "USD over every limit: UNSUPPORTED_CURRENCY only, no HIGH_AMOUNT"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-18",
+      "category": "NEG",
+      "transaction_id": "T-CUR-18",
+      "status": "IMPORTED",
+      "flags": [
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "GBP: unsupported"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-19",
+      "category": "NEG",
+      "transaction_id": "T-CUR-19",
+      "status": "IMPORTED",
+      "flags": [
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "DKK (Nordic neighbour) over 10000: still unsupported, no HIGH_AMOUNT"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-20",
+      "category": "NEG",
+      "transaction_id": "T-CUR-20",
+      "status": "IMPORTED",
+      "flags": [
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "EURO is not the code EUR: importer keeps it, UNSUPPORTED_CURRENCY, no HIGH_AMOUNT"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-21",
+      "category": "NEG",
+      "transaction_id": "T-CUR-21",
+      "status": "IMPORTED",
+      "flags": [
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "euro sign is not a code: importer keeps it, UNSUPPORTED_CURRENCY, no HIGH_AMOUNT"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-22",
+      "category": "NEG",
+      "transaction_id": "T-CUR-22",
+      "status": "IMPORTED",
+      "flags": [
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "NOKK typo: unsupported, not matched to NOK"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-23",
+      "category": "NEG",
+      "transaction_id": "T-CUR-23",
+      "status": "IMPORTED",
+      "flags": [
+        "FAR_FUTURE_DUE",
+        "NEW_CREDITOR",
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "USD + new creditor + far due: other rules still apply, no HIGH_AMOUNT"
+    },
+    {
+      "file": "all_rules.csv",
+      "case": "CUR-24",
+      "category": "NEG",
+      "transaction_id": "T-CUR-24",
+      "status": "IMPORTED",
+      "flags": [
+        "PAST_DUE_DATE",
+        "UNSUPPORTED_CURRENCY"
+      ],
+      "note": "USD due before created date: PAST_DUE_DATE still applies"
     },
     {
       "file": "all_rules.csv",
@@ -724,6 +922,15 @@
       "status": "ERROR",
       "flags": [],
       "note": "whitespace-only amount"
+    },
+    {
+      "file": "errors.csv",
+      "case": "ERR-16",
+      "category": "NEG",
+      "transaction_id": "T-ERR-16",
+      "status": "ERROR",
+      "flags": [],
+      "note": "whitespace-only currency: trimmed to empty, rejected like a missing one"
     },
     {
       "file": "errors.csv",

@@ -753,10 +753,10 @@
       "file": "p09_currency.xml",
       "case": "FILE-P09",
       "category": "NEG",
-      "note": "non-NOK currencies, other rules still apply",
+      "note": "per-currency HIGH_AMOUNT limits (NOK/SEK 10000, EUR 1000) and unsupported currencies",
       "summary": {
-        "imported": 4,
-        "flagged": 3,
+        "imported": 18,
+        "flagged": 12,
         "duplicates": 0,
         "errors": 0
       },
@@ -769,10 +769,8 @@
           "category": "NEG",
           "transaction_id": "CUR-E2E-01",
           "status": "IMPORTED",
-          "flags": [
-            "UNSUPPORTED_CURRENCY"
-          ],
-          "note": "EUR, debtor's first txn",
+          "flags": [],
+          "note": "EUR under the EUR limit, debtor's first txn: no flags",
           "fields": {
             "debtor_account": "86011117950",
             "creditor_account": "90001100001",
@@ -785,14 +783,13 @@
         },
         {
           "case": "CUR-02",
-          "category": "NEG",
+          "category": "POS",
           "transaction_id": "CUR-E2E-02",
           "status": "IMPORTED",
           "flags": [
-            "HIGH_AMOUNT",
-            "UNSUPPORTED_CURRENCY"
+            "HIGH_AMOUNT"
           ],
-          "note": "SEK over limit: other rules still apply (PO)",
+          "note": "SEK over the SEK limit: HIGH_AMOUNT only",
           "fields": {
             "debtor_account": "86011117950",
             "creditor_account": "90001100001",
@@ -821,6 +818,245 @@
           "file": "p09_currency.xml"
         },
         {
+          "case": "CUR-05",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-05",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "SEK exactly at the limit is not flagged",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "10000.00",
+            "currency": "SEK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-06",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-06",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "SEK one ore over the limit",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "10000.01",
+            "currency": "SEK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-07",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-07",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "EUR exactly at the EUR limit is not flagged",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "1000.00",
+            "currency": "EUR",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-08",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-08",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "EUR one cent over the EUR limit",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "1000.01",
+            "currency": "EUR",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-09",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-09",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "EUR one cent under the EUR limit",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "999.99",
+            "currency": "EUR",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-10",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-10",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "EUR three decimals, just over the EUR limit",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "1000.001",
+            "currency": "EUR",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-11",
+          "category": "POS",
+          "transaction_id": "CUR-E2E-11",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "EUR 1500 is high, the same amount in NOK is not (no conversion)",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "1500.00",
+            "currency": "EUR",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-12",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-12",
+          "status": "IMPORTED",
+          "flags": [],
+          "note": "NOK 1500 control for CUR-11: no flags",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "1500.00",
+            "currency": "NOK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-13",
+          "category": "CORNER",
+          "transaction_id": "CUR-E2E-13",
+          "status": "IMPORTED",
+          "flags": [
+            "HIGH_AMOUNT"
+          ],
+          "note": "Ccy=\"sek\" upper-cased on import: SEK limit applies",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "50000.00",
+            "currency": "SEK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-14",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-14",
+          "status": "IMPORTED",
+          "flags": [
+            "UNSUPPORTED_CURRENCY"
+          ],
+          "note": "USD over every limit: UNSUPPORTED_CURRENCY only, no HIGH_AMOUNT",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "50000.00",
+            "currency": "USD",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-15",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-15",
+          "status": "IMPORTED",
+          "flags": [
+            "UNSUPPORTED_CURRENCY"
+          ],
+          "note": "DKK (Nordic neighbour): unsupported, no HIGH_AMOUNT",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "50000.00",
+            "currency": "DKK",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-16",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-16",
+          "status": "IMPORTED",
+          "flags": [
+            "UNSUPPORTED_CURRENCY"
+          ],
+          "note": "GBP: unsupported",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "100.00",
+            "currency": "GBP",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-17",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-17",
+          "status": "IMPORTED",
+          "flags": [
+            "UNSUPPORTED_CURRENCY"
+          ],
+          "note": "Ccy=\"EURO\" is not EUR: imported as unsupported, no HIGH_AMOUNT",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100001",
+            "amount": "5000.00",
+            "currency": "EURO",
+            "due_date": "2026-10-15",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
           "case": "CUR-04",
           "category": "POS",
           "transaction_id": "CUR-E2E-04",
@@ -828,15 +1064,35 @@
           "flags": [
             "FAR_FUTURE_DUE",
             "HIGH_AMOUNT",
-            "NEW_CREDITOR",
-            "UNSUPPORTED_CURRENCY"
+            "NEW_CREDITOR"
           ],
-          "note": "EUR + high + new creditor + far due: every flag",
+          "note": "EUR high + new creditor + far due: no currency flag",
           "fields": {
             "debtor_account": "86011117950",
             "creditor_account": "90001100002",
             "amount": "20000.00",
             "currency": "EUR",
+            "due_date": "2027-06-01",
+            "created_date": "2026-10-01"
+          },
+          "file": "p09_currency.xml"
+        },
+        {
+          "case": "CUR-18",
+          "category": "NEG",
+          "transaction_id": "CUR-E2E-18",
+          "status": "IMPORTED",
+          "flags": [
+            "FAR_FUTURE_DUE",
+            "NEW_CREDITOR",
+            "UNSUPPORTED_CURRENCY"
+          ],
+          "note": "USD + new creditor + far due: other rules still apply, no HIGH_AMOUNT",
+          "fields": {
+            "debtor_account": "86011117950",
+            "creditor_account": "90001100003",
+            "amount": "50000.00",
+            "currency": "USD",
             "due_date": "2027-06-01",
             "created_date": "2026-10-01"
           },

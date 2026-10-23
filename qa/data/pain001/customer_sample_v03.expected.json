@@ -6,7 +6,7 @@
   "transactions": [
     {"transaction_id": "E2E-0001", "flags": [], "note": "debtor's first transaction: never NEW_CREDITOR"},
     {"transaction_id": "E2E-0002", "flags": ["HIGH_AMOUNT", "NEW_CREDITOR"], "note": "15,000 NOK; debtor known from E2E-0001 in the same file"},
-    {"transaction_id": "E2E-0003", "flags": ["NEW_CREDITOR", "UNSUPPORTED_CURRENCY"], "note": "EUR to a new creditor (IBAN); PO: other rules still apply, customer only expected UNSUPPORTED_CURRENCY"},
+    {"transaction_id": "E2E-0003", "flags": ["NEW_CREDITOR"], "note": "EUR 650 to a new creditor (IBAN); EUR is supported since PO 2026-10-23 10:20 and 650 is under the EUR limit of 1000: only NEW_CREDITOR"},
     {"transaction_id": "E2E-0004", "flags": ["FAR_FUTURE_DUE"], "note": "due 2027-03-01 > 2026-10-23 + 3 months; creditor known from E2E-0001 (second PmtInf block)"}
   ]
 }
