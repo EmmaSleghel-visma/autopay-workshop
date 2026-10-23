@@ -26,6 +26,15 @@ t1,1234.56.78903,9876.54.32109,10000.01,NOK,2026-11-30,2026-10-01
 
 `created_date` is optional. Account numbers are compared with spaces and dots removed.
 A `transaction_id` that was already imported is skipped and reported as a duplicate.
+Zero and negative amounts are rejected.
+
+### ISO 20022 pain.001 (`.xml` files)
+
+Versions `pain.001.001.03` and `.09` are supported (`fraud_detection/pain001.py`, mapping in its docstring):
+`EndToEndId` (or `InstrId` when it is `NOTPROVIDED`) → transaction_id, `PmtInf/DbtrAcct` → debtor,
+`CdtrAcct` → creditor, `InstdAmt` + `Ccy` → amount/currency, `PmtInf/ReqdExctnDt` → due date,
+`GrpHdr/CreDtTm` → created date. A transaction without `CdtrAcct`, or with `EqvtAmt`, is reported as an error.
+History is shared with CSV imports, so the same accounts match across both formats.
 
 ### Run on Windows
 
@@ -41,11 +50,11 @@ Then open http://127.0.0.1:5000. Data is stored in `fraud_detection.db` (overrid
 
 ```
 .venv\Scripts\python -m fraud_detection import samples\transactions.csv
+.venv\Scripts\python -m fraud_detection import samples\pain001_v03.xml
 .venv\Scripts\python -m fraud_detection list
 ```
 
 `samples/README.md` lists what each sample row exercises and the expected result.
-Until `rules.py` is implemented, transactions are imported without flags.
 
 ### Tests
 
